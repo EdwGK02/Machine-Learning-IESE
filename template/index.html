@@ -4,25 +4,169 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Machine Learning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .content h2 {
+            color: #1e3c72;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .card {
+            background: #f8f9ff;
+            border-left: 5px solid;
+            border-radius: 8px;
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card.supervised {
+            border-color: #4CAF50;
+        }
+
+        .card.unsupervised {
+            border-color: #FF9800;
+        }
+
+        .card.reinforcement {
+            border-color: #E91E63;
+        }
+
+        .card h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+        }
+
+        .card.supervised h3 { color: #4CAF50; }
+        .card.unsupervised h3 { color: #FF9800; }
+        .card.reinforcement h3 { color: #E91E63; }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+        }
+
+        .card.supervised .badge { background: #4CAF50; }
+        .card.unsupervised .badge { background: #FF9800; }
+        .card.reinforcement .badge { background: #E91E63; }
+
+        .card p {
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .card .example {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-size: 0.85rem;
+        }
+    </style>
 </head>
 <body>
-    <h1>¿Qué es Machine Learning?</h1>
-    <p>El Machine Learning (aprendizaje automático) es una rama de la inteligencia artificial 
-    que permite a los sistemas aprender patrones a partir de datos, sin ser programados 
-    explícitamente para cada tarea.</p>
+    <div class="container">
+        <header>
+            <h1>🤖 What is Machine Learning?</h1>
+            <p>Machine Learning is a branch of artificial intelligence that allows systems 
+            to learn patterns from data, without being explicitly programmed for each task.</p>
+        </header>
 
-    <h2>Tipos de Machine Learning</h2>
-    
-    <h3>1. Aprendizaje Supervisado</h3>
-    <p>El modelo aprende a partir de datos etiquetados (con la respuesta correcta ya conocida). 
-    Ejemplos: clasificación de correos como spam o no spam, predicción de precios.</p>
+        <div class="content">
+            <h2>Types of Machine Learning</h2>
 
-    <h3>2. Aprendizaje No Supervisado</h3>
-    <p>El modelo trabaja con datos sin etiquetar y busca patrones o agrupaciones por sí mismo. 
-    Ejemplo: segmentación de clientes según su comportamiento de compra.</p>
+            <div class="card supervised">
+                <h3>1. Supervised Learning <span class="badge">Labeled Data</span></h3>
+                <p>The model learns from labeled data (where the correct answer is already known).
+                It maps inputs to known outputs by finding patterns in the training examples.</p>
+                <p class="example">Examples: spam email classification, price prediction.</p>
+            </div>
 
-    <h3>3. Aprendizaje por Refuerzo</h3>
-    <p>El modelo aprende mediante prueba y error, recibiendo recompensas o penalizaciones 
-    según sus acciones. Ejemplo: un agente que aprende a jugar ajedrez o videojuegos.</p>
+            <div class="card unsupervised">
+                <h3>2. Unsupervised Learning <span class="badge">Unlabeled Data</span></h3>
+                <p>The model works with unlabeled data and looks for patterns or groupings 
+                on its own, without any predefined correct answer.</p>
+                <p class="example">Example: customer segmentation based on purchasing behavior.</p>
+            </div>
+
+            <div class="card reinforcement">
+                <h3>3. Reinforcement Learning <span class="badge">Trial & Error</span></h3>
+                <p>The model learns through trial and error, receiving rewards or penalties 
+                based on its actions, gradually improving its strategy over time.</p>
+                <p class="example">Example: an agent learning to play chess or video games.</p>
+            </div>
+        </div>
+
+        <footer>
+            UDEC-Chía · Machine Learning Course
+        </footer>
+    </div>
 </body>
 </html>
