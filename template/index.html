@@ -131,6 +131,7 @@
 
         .card.supervised .sub-block h4 { color: #2e7d32; }
         .card.unsupervised .sub-block h4 { color: #ef6c00; }
+        .card.reinforcement .sub-block h4 { color: #ad1457; }
 
         footer {
             text-align: center;
@@ -208,15 +209,32 @@
 
             <div class="card reinforcement">
                 <h3>3. Reinforcement Learning <span class="badge">Trial & Error</span></h3>
-                <p>The model learns through trial and error, receiving rewards or penalties
-                based on its actions, gradually improving its strategy over time.</p>
+                <p>Reinforcement learning is a machine learning technique that trains software to
+                make decisions in order to achieve the best possible results. It mimics the
+                trial-and-error learning process that humans use to achieve their goals. Actions
+                that work toward the goal are reinforced, while those that deviate from it are
+                discouraged.</p>
+                <p>RL algorithms use a reward-and-punishment paradigm when processing data. They
+                learn from the feedback on each action and discover on their own the best paths
+                to achieve the final results.</p>
                 <p class="example">Example: an agent learning to play chess or video games.</p>
-            </div>
-        </div>
 
-        <footer>
-            UDEC-Chía · Machine Learning Course
-        </footer>
-    </div>
-</body>
-</html>
+                <div class="sub-block">
+                    <h4>Excels in complex environments</h4>
+                    <p>Reinforcement learning algorithms can be used in complex environments with
+                    many rules and dependencies.</p>
+                </div>
+
+                <div class="sub-block">
+                    <h4>Requires less human interaction</h4>
+                    <p>The algorithm learns on its own, while still offering mechanisms to
+                    integrate human feedback — allowing systems that adapt to human preferences,
+                    experience, and corrections.</p>
+                </div>
+
+                <div class="sub-block">
+                    <h4>Optimizes for long-term goals</h4>
+                    <p>Reinforcement learning is intrinsically focused on maximizing long-term
+                    rewards, making it well-suited for scenarios where actions have prolonged
+                    consequences and immediate feedback is not always available.</p>
+                </div>
