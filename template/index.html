@@ -74,17 +74,9 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .card.supervised {
-            border-color: #4CAF50;
-        }
-
-        .card.unsupervised {
-            border-color: #FF9800;
-        }
-
-        .card.reinforcement {
-            border-color: #E91E63;
-        }
+        .card.supervised { border-color: #4CAF50; }
+        .card.unsupervised { border-color: #FF9800; }
+        .card.reinforcement { border-color: #E91E63; }
 
         .card h3 {
             display: flex;
@@ -114,6 +106,7 @@
         .card p {
             line-height: 1.6;
             color: #444;
+            margin-bottom: 10px;
         }
 
         .card .example {
@@ -122,6 +115,22 @@
             color: #666;
             font-style: italic;
         }
+
+        .sub-block {
+            background: #ffffff;
+            border-radius: 6px;
+            padding: 14px 18px;
+            margin-top: 14px;
+            border: 1px solid #eee;
+        }
+
+        .sub-block h4 {
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        .card.supervised .sub-block h4 { color: #2e7d32; }
+        .card.unsupervised .sub-block h4 { color: #ef6c00; }
 
         footer {
             text-align: center;
@@ -135,7 +144,7 @@
     <div class="container">
         <header>
             <h1>🤖 What is Machine Learning?</h1>
-            <p>Machine Learning is a branch of artificial intelligence that allows systems 
+            <p>Machine Learning is a branch of artificial intelligence that allows systems
             to learn patterns from data, without being explicitly programmed for each task.</p>
         </header>
 
@@ -145,20 +154,61 @@
             <div class="card supervised">
                 <h3>1. Supervised Learning <span class="badge">Labeled Data</span></h3>
                 <p>The model learns from labeled data (where the correct answer is already known).
-                It maps inputs to known outputs by finding patterns in the training examples.</p>
-                <p class="example">Examples: spam email classification, price prediction.</p>
+                It maps inputs to known outputs by finding patterns in the training examples.
+                Supervised learning has two important branches:</p>
+
+                <div class="sub-block">
+                    <h4>Classification (categorical variable)</h4>
+                    <p>It assigns each element to a predefined category or class.</p>
+                    <p class="example">Example: in medical diagnosis, a system classifies a patient
+                    as healthy or sick based on their symptoms and clinical tests.</p>
+                </div>
+
+                <div class="sub-block">
+                    <h4>Regression (numerical variable)</h4>
+                    <p>Regression predicts a continuous numerical value. The output variable
+                    can take any value within a range.</p>
+                    <p class="example">Example: house price prediction — the system estimates
+                    the price of a house based on features such as square meters, location, and
+                    number of rooms.</p>
+                </div>
             </div>
 
             <div class="card unsupervised">
                 <h3>2. Unsupervised Learning <span class="badge">Unlabeled Data</span></h3>
-                <p>The model works with unlabeled data and looks for patterns or groupings 
-                on its own, without any predefined correct answer.</p>
-                <p class="example">Example: customer segmentation based on purchasing behavior.</p>
+                <p>These algorithms draw inferences from unlabeled datasets — datasets that do not
+                contain predefined answers — in order to identify hidden patterns or structures
+                within the data. This approach has an exploratory nature and is useful when
+                organizations have large amounts of raw data but limited knowledge of the
+                relationships within it.</p>
+
+                <div class="sub-block">
+                    <h4>K-means Clustering</h4>
+                    <p>Assigns data points to K groups, where points that are closest to a given
+                    centroid are grouped into the same cluster. K represents the number of clusters
+                    to be found.</p>
+                </div>
+
+                <div class="sub-block">
+                    <h4>Hierarchical Clustering</h4>
+                    <p>Includes agglomerative clustering, in which data points are initially placed
+                    into separate groups and then iteratively merged based on their similarity
+                    until a single cluster (or the desired number of clusters) remains.</p>
+                </div>
+
+                <div class="sub-block">
+                    <h4>Probabilistic Clustering</h4>
+                    <p>Groups data points based on the probability that they belong to a
+                    particular distribution.</p>
+                </div>
+
+                <p class="example">These algorithms are often behind recommendation systems,
+                based on the concept of "customers who bought this also bought…".</p>
             </div>
 
             <div class="card reinforcement">
                 <h3>3. Reinforcement Learning <span class="badge">Trial & Error</span></h3>
-                <p>The model learns through trial and error, receiving rewards or penalties 
+                <p>The model learns through trial and error, receiving rewards or penalties
                 based on its actions, gradually improving its strategy over time.</p>
                 <p class="example">Example: an agent learning to play chess or video games.</p>
             </div>
