@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Data with Roots{% endblock %}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 18px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            position: relative;
+            z-index: 100;
+        }
+
+        .nav-brand a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 28px;
+        }
+
+        .nav-links > li {
+            position: relative;
+        }
+
+        .nav-links > li > a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            padding: 8px 4px;
+            transition: opacity 0.2s ease;
+        }
+
+        .nav-links > li > a:hover {
+            opacity: 0.8;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #ffffff;
+            min-width: 200px;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-menu li a {
+            display: block;
+            padding: 12px 18px;
+            color: #1e3c72;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .dropdown-menu li a:hover {
+            background: #f8f9ff;
+        }
+
+        /* Page content wrapper */
+        .content {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            padding: 40px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #eee;
+            font-size: 0.85rem;
+        }
+    </style>
+    {% block extra_style %}{% endblock %}
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="{{ url_for('home') }}">Data with Roots</a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li class="dropdown">
+                <a href="#">Machine Learning</a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ url_for('ml_concepts') }}">Machine Learning Concepts</a></li>
+                    <li><a href="{{ url_for('ml_types') }}">ML Types</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Linear Regression</a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ url_for('lr_concepts') }}">Linear Regression Concepts</a></li>
+                    <li><a href="{{ url_for('lr_application') }}">Try It</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Los Helados de la esquina</a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ url_for('use_case', n=1) }}">Use Case 1</a></li>
+                    <li><a href="{{ url_for('use_case', n=2) }}">Use Case 2</a></li>
+                    <li><a href="{{ url_for('use_case', n=3) }}">Use Case 3</a></li>
+                    <li><a href="{{ url_for('use_case', n=4) }}">Use Case 4</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Data with Roots</p>
+    </footer>
+
+</body>
+</html>
