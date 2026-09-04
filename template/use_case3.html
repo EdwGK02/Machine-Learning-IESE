@@ -1,0 +1,56 @@
+{% extends "Mol.html" %}
+{% block title %}Use Case 3{% endblock %}
+
+{% block extra_style %}
+<style>
+    .uc-block {
+        border-left: 4px solid #1e3c72;
+        background: #f8f9ff;
+        border-radius: 8px;
+        padding: 18px 22px;
+        margin-bottom: 18px;
+    }
+    .uc-block h4 {
+        color: #1e3c72;
+        margin-bottom: 8px;
+        font-size: 1.05rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 style="color:#1e3c72; margin-bottom: 8px;">Use Case 3: Demand Forecasting in Retail</h1>
+<p style="color:#555; margin-bottom: 24px;">A supervised learning application in retail.</p>
+
+<div class="uc-block">
+    <h4>Problem Context</h4>
+    <p>Retail stores must decide how much stock to order weeks in advance. Ordering too
+    much leads to unsold, expired inventory; ordering too little leads to empty
+    shelves and lost sales.</p>
+</div>
+
+<div class="uc-block">
+    <h4>Data That Could Be Used</h4>
+    <p>Historical sales records combined with variables that influence demand, such as
+    season, day of the week, promotions, and weather conditions.</p>
+</div>
+
+<div class="uc-block">
+    <h4>What the Model Should Predict / Discover</h4>
+    <p>The expected number of units that will be sold in a future period for a given
+    product.</p>
+</div>
+
+<div class="uc-block">
+    <h4>Type of Machine Learning</h4>
+    <p>Supervised Learning (Regression) &mdash; this is the same family of model used in
+    this project's own Linear Regression calculator, which predicts ice cream sales
+    from temperature.</p>
+</div>
+
+<div class="uc-block">
+    <h4>Potential Benefit</h4>
+    <p>Better inventory planning, reduced waste from overstocking, and fewer missed
+    sales from understocking.</p>
+</div>
+{% endblock %}

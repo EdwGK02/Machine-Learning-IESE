@@ -1,0 +1,56 @@
+{% extends "Mol.html" %}
+{% block title %}Use Case 2{% endblock %}
+
+{% block extra_style %}
+<style>
+    .uc-block {
+        border-left: 4px solid #1e3c72;
+        background: #f8f9ff;
+        border-radius: 8px;
+        padding: 18px 22px;
+        margin-bottom: 18px;
+    }
+    .uc-block h4 {
+        color: #1e3c72;
+        margin-bottom: 8px;
+        font-size: 1.05rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 style="color:#1e3c72; margin-bottom: 8px;">Use Case 2: Fraud Detection in Banking Transactions</h1>
+<p style="color:#555; margin-bottom: 24px;">A supervised learning application in finance.</p>
+
+<div class="uc-block">
+    <h4>Problem Context</h4>
+    <p>Banks process millions of transactions every day. A human team cannot review each
+    one individually, yet even a small number of undetected fraudulent transactions can
+    cause significant financial losses.</p>
+</div>
+
+<div class="uc-block">
+    <h4>Data That Could Be Used</h4>
+    <p>Historical transaction records including amount, location, time of day, merchant
+    type, and whether each past transaction was later confirmed as fraudulent or
+    legitimate.</p>
+</div>
+
+<div class="uc-block">
+    <h4>What the Model Should Predict / Classify</h4>
+    <p>Whether a new, incoming transaction is likely to be fraudulent or legitimate, in
+    real time.</p>
+</div>
+
+<div class="uc-block">
+    <h4>Type of Machine Learning</h4>
+    <p>Supervised Learning (Classification) &mdash; trained on transactions already labeled
+    as fraud or not fraud.</p>
+</div>
+
+<div class="uc-block">
+    <h4>Potential Benefit</h4>
+    <p>Transactions can be flagged and blocked within milliseconds, reducing financial
+    losses and protecting customers without needing manual review of every transaction.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,242 @@
+{% extends "Mol.html" %}
+
+{% block title %}Linear Regression Application{% endblock %}
+
+{% block extra_style %}
+<style>
+    .lr-container {
+        max-width: 1000px;
+        margin: auto;
+    }
+
+    .lr-card {
+        background: #f8f9ff;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 20px;
+        border-left: 4px solid #667eea;
+    }
+
+    .lr-card h3 {
+        color: #1e3c72;
+        margin-bottom: 15px;
+    }
+
+    .prediction {
+        background: #eef0ff;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .prediction h2 {
+        color: #1e3c72;
+        margin-bottom: 10px;
+    }
+
+    .prediction-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #667eea;
+    }
+
+    .error {
+        background: #ffe6e6;
+        color: #b00020;
+        padding: 12px;
+        border-radius: 8px;
+        margin-top: 15px;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .stat-card strong {
+        display: block;
+        font-size: 1.4rem;
+        color: #1e3c72;
+        margin-top: 5px;
+    }
+
+    .plot-container {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .plot-container img {
+        max-width: 100%;
+        border-radius: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="lr-container">
+
+    <h1 style="color:#1e3c72; margin-bottom:8px;">
+        Linear Regression Application
+    </h1>
+
+    <p style="color:#555; margin-bottom:25px;">
+        Predict ice cream sales based on temperature using a Linear Regression model.
+    </p>
+
+
+    <div class="lr-card">
+
+        <h3>Ice Cream Sales Prediction</h3>
+
+        <p>
+            Enter a temperature in degrees Celsius to estimate
+            the number of ice cream units that could be sold.
+        </p>
+
+        <form method="POST">
+
+            <label for="Temperature">
+                <strong>Temperature (°C)</strong>
+            </label>
+
+            <input
+                type="number"
+                step="any"
+                name="Temperature"
+                id="Temperature"
+                class="form-control"
+                placeholder="Example: 25"
+                value="{{ input_value }}"
+                required
+            >
+
+            <button
+                type="submit"
+                class="btn btn-primary mt-3"
+            >
+                Predict Sales
+            </button>
+
+        </form>
+
+
+        {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+        {% endif %}
+
+
+        {% if result is not none %}
+        <div class="prediction">
+
+            <h2>Prediction Result</h2>
+
+            <p>
+                At a temperature of
+                <strong>{{ input_value }} °C</strong>,
+                the model predicts approximately:
+            </p>
+
+            <div class="prediction-value">
+                {{ result }} ice cream units
+            </div>
+
+        </div>
+        {% endif %}
+
+    </div>
+
+
+    <div class="lr-card">
+
+        <h3>Model Information</h3>
+
+        <div class="stats">
+
+            <div class="stat-card">
+                Number of Records
+                <strong>{{ n_records }}</strong>
+            </div>
+
+            <div class="stat-card">
+                R² Score
+                <strong>{{ r2_score }}</strong>
+            </div>
+
+            <div class="stat-card">
+                MAE
+                <strong>{{ mae_score }}</strong>
+            </div>
+
+            <div class="stat-card">
+                Slope
+                <strong>{{ slope }}</strong>
+            </div>
+
+            <div class="stat-card">
+                Intercept
+                <strong>{{ intercept }}</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="lr-card">
+
+        <h3>Regression Model</h3>
+
+        <p>
+            The model uses the following linear equation:
+        </p>
+
+        <div style="
+            text-align:center;
+            font-size:1.5rem;
+            font-weight:bold;
+            color:#1e3c72;
+            margin:20px;
+        ">
+            Y = mX + b
+        </div>
+
+        <p>
+            In this project, temperature is the independent variable
+            and ice cream sales are the dependent variable.
+        </p>
+
+    </div>
+
+
+    <div class="lr-card">
+
+        <h3>Regression Plot</h3>
+
+        <div class="plot-container">
+
+            <img
+                src="data:image/png;base64,{{ plot_image }}"
+                alt="Ice Cream Sales vs Temperature Regression Plot"
+            >
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

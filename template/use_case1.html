@@ -1,0 +1,56 @@
+{% extends "Mol.html" %}
+{% block title %}Use Case 1{% endblock %}
+
+{% block extra_style %}
+<style>
+    .uc-block {
+        border-left: 4px solid #1e3c72;
+        background: #f8f9ff;
+        border-radius: 8px;
+        padding: 18px 22px;
+        margin-bottom: 18px;
+    }
+    .uc-block h4 {
+        color: #1e3c72;
+        margin-bottom: 8px;
+        font-size: 1.05rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 style="color:#1e3c72; margin-bottom: 8px;">Use Case 1: Disease Risk Prediction in Healthcare</h1>
+<p style="color:#555; margin-bottom: 24px;">A supervised learning application in medicine.</p>
+
+<div class="uc-block">
+    <h4>Problem Context</h4>
+    <p>Hospitals collect large amounts of patient data (lab results, vital signs, medical
+    history) but doctors cannot manually cross-check every record against known risk
+    patterns for every patient, which can delay early diagnosis of conditions such as
+    diabetes or heart disease.</p>
+</div>
+
+<div class="uc-block">
+    <h4>Data That Could Be Used</h4>
+    <p>Historical patient records including age, blood pressure, cholesterol levels,
+    glucose levels, BMI, and the final diagnosis for each past patient.</p>
+</div>
+
+<div class="uc-block">
+    <h4>What the Model Should Predict / Classify</h4>
+    <p>Whether a new patient is at high, medium, or low risk of developing a specific
+    condition, based on their current lab values and history.</p>
+</div>
+
+<div class="uc-block">
+    <h4>Type of Machine Learning</h4>
+    <p>Supervised Learning (Classification) &mdash; the model is trained on past patients
+    whose diagnosis is already known.</p>
+</div>
+
+<div class="uc-block">
+    <h4>Potential Benefit</h4>
+    <p>Earlier detection of at-risk patients, allowing doctors to prioritize care and
+    potentially prevent the condition from progressing.</p>
+</div>
+{% endblock %}
