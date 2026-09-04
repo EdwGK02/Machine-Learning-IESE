@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Data with Roots{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,36 +15,36 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            background: #fff8f0;
             min-height: 100vh;
-            color: #333;
+            color: #4a3f45;
         }
 
         /* Navbar */
         .navbar {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            padding: 18px 40px;
+            background: #fff8f0;
+            border-bottom: 3px solid #ffe0ec;
+            color: #4a3f45;
+            padding: 16px 40px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
             position: relative;
             z-index: 100;
         }
 
         .nav-brand a {
-            color: white;
+            color: #ff6b9d;
             text-decoration: none;
-            font-size: 1.4rem;
-            font-weight: bold;
+            font-size: 1.5rem;
+            font-weight: 700;
         }
 
         .nav-links {
             list-style: none;
             display: flex;
-            gap: 28px;
+            gap: 12px;
         }
 
         .nav-links > li {
@@ -49,18 +52,23 @@
         }
 
         .nav-links > li > a {
-            color: white;
+            color: #4a3f45;
             text-decoration: none;
-            font-size: 1rem;
-            padding: 8px 4px;
-            transition: opacity 0.2s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 10px 18px;
+            border-radius: 999px;
+            display: inline-block;
+            transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
         }
 
         .nav-links > li > a:hover {
-            opacity: 0.8;
-            border-bottom: 2px solid #667eea;
+            background: #4ecdc4;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(78, 205, 196, 0.35);
         }
 
+        /* Dropdown: no gap between trigger and menu, so hover never breaks */
         .dropdown-menu {
             display: none;
             position: absolute;
@@ -68,10 +76,13 @@
             left: 0;
             background: #ffffff;
             min-width: 200px;
-            border-radius: 8px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.18);
             overflow: hidden;
-            margin-top: 10px;
+            padding: 6px;
+            /* padding-top creates visual breathing room WITHOUT a hover dead-zone */
+            padding-top: 18px;
+            margin-top: -6px;
         }
 
         .dropdown:hover .dropdown-menu {
@@ -80,14 +91,18 @@
 
         .dropdown-menu li a {
             display: block;
-            padding: 12px 18px;
-            color: #1e3c72;
+            padding: 10px 16px;
+            color: #4a3f45;
             text-decoration: none;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 12px;
+            transition: background 0.2s ease, color 0.2s ease;
         }
 
         .dropdown-menu li a:hover {
-            background: #f8f9ff;
+            background: #ffe0ec;
+            color: #ff6b9d;
         }
 
         /* Page content wrapper */
@@ -95,17 +110,19 @@
             max-width: 900px;
             margin: 40px auto;
             background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(255, 107, 157, 0.12);
             overflow: hidden;
             padding: 40px;
+            border-top: 5px solid #4ecdc4;
         }
 
         footer {
             text-align: center;
             padding: 20px;
-            color: #eee;
+            color: #c9959e;
             font-size: 0.85rem;
+            background: #fff8f0;
         }
     </style>
     {% block extra_style %}{% endblock %}
@@ -114,26 +131,26 @@
 
     <nav class="navbar">
         <div class="nav-brand">
-            <a href="{{ url_for('home') }}">Machine Learning</a>
+            <a href="{{ url_for('home') }}">🍦 Data with Roots</a>
         </div>
         <ul class="nav-links">
             <li><a href="{{ url_for('home') }}">Home</a></li>
             <li class="dropdown">
                 <a href="#">Machine Learning</a>
                 <ul class="dropdown-menu">
-                    <li><a href="{{ url_for('ml_concepts') }}">Machine Learning Concepts</a></li>
+                    <li><a href="{{ url_for('ml_concepts') }}">ML Concepts</a></li>
                     <li><a href="{{ url_for('ml_types') }}">ML Types</a></li>
                 </ul>
             </li>
             <li class="dropdown">
                 <a href="#">Linear Regression</a>
                 <ul class="dropdown-menu">
-                    <li><a href="{{ url_for('lr_concepts') }}">Linear Regression Concepts</a></li>
+                    <li><a href="{{ url_for('lr_concepts') }}">LR Concepts</a></li>
                     <li><a href="{{ url_for('lr_application') }}">Try It</a></li>
                 </ul>
             </li>
             <li class="dropdown">
-                <a href="#">Los Helados de la esquina</a>
+                <a href="#">Use Cases</a>
                 <ul class="dropdown-menu">
                     <li><a href="{{ url_for('use_case', n=1) }}">Use Case 1</a></li>
                     <li><a href="{{ url_for('use_case', n=2) }}">Use Case 2</a></li>
@@ -154,3 +171,4 @@
 
 </body>
 </html>
+
