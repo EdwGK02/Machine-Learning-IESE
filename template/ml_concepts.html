@@ -1,0 +1,172 @@
+{% extends "Mol.html" %}
+
+{% block title %}Machine Learning Concepts - Machine Learning{% endblock %}
+
+{% block extra_style %}
+<style>
+    .intro-banner {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border-radius: 12px;
+        padding: 40px;
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .intro-banner h1 {
+        font-size: 2.1rem;
+        margin-bottom: 10px;
+    }
+
+    .intro-banner p {
+        max-width: 650px;
+        margin: 0 auto;
+        line-height: 1.6;
+        opacity: 0.92;
+    }
+
+    .section-title {
+        color: #1e3c72;
+        font-size: 1.5rem;
+        margin: 30px 0 20px;
+        padding-bottom: 8px;
+        border-bottom: 3px solid #667eea;
+    }
+
+    .term-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 18px;
+        margin-bottom: 10px;
+    }
+
+    .term-card {
+        background: #f8f9ff;
+        border-left: 5px solid #667eea;
+        border-radius: 8px;
+        padding: 18px 20px;
+    }
+
+    .term-card h3 {
+        color: #1e3c72;
+        font-size: 1.05rem;
+        margin-bottom: 8px;
+    }
+
+    .term-card p {
+        color: #444;
+        font-size: 0.92rem;
+        line-height: 1.55;
+    }
+
+    .workflow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        counter-reset: step;
+    }
+
+    .workflow-step {
+        flex: 1 1 180px;
+        background: #ffffff;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 18px;
+        position: relative;
+    }
+
+    .workflow-step::before {
+        counter-increment: step;
+        content: counter(step);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: #667eea;
+        color: white;
+        font-size: 0.85rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .workflow-step h4 {
+        color: #1e3c72;
+        font-size: 1rem;
+        margin-bottom: 6px;
+    }
+
+    .workflow-step p {
+        color: #555;
+        font-size: 0.88rem;
+        line-height: 1.5;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="intro-banner">
+    <h1>What is Machine Learning?</h1>
+    <p>Machine Learning is a branch of artificial intelligence that allows systems 
+    to learn patterns from data, without being explicitly programmed for each task..</p>
+</div>
+
+<h2 class="section-title">Key vocabulary</h2>
+<div class="term-grid">
+    <div class="term-card">
+        <h3>Dataset</h3>
+        <p>The collection of examples used to teach the model, such as our table of past
+        temperatures and the ice cream sales recorded on those days.</p>
+    </div>
+    <div class="term-card">
+        <h3>Features</h3>
+        <p>The input variables the model uses to make a prediction. In our case, the
+        temperature is the feature.</p>
+    </div>
+    <div class="term-card">
+        <h3>Label</h3>
+        <p>The value the model is trying to predict. Here, that's the number of ice
+        creams sold.</p>
+    </div>
+    <div class="term-card">
+        <h3>Model</h3>
+        <p>The mathematical relationship the algorithm builds between features and
+        labels once training is done.</p>
+    </div>
+    <div class="term-card">
+        <h3>Training vs. testing</h3>
+        <p>Part of the data is used to teach the model (training) and a separate part
+        is held back to check how well it generalizes (testing).</p>
+    </div>
+    <div class="term-card">
+        <h3>Error / loss</h3>
+        <p>A measure of how far the model's predictions are from the real values. Lower
+        error means a better fit to the data.</p>
+    </div>
+</div>
+
+<h2 class="section-title">How a model learns: the general workflow</h2>
+<div class="workflow">
+    <div class="workflow-step">
+        <h4>Collect data</h4>
+        <p>Gather real examples, like historical temperature and sales records.</p>
+    </div>
+    <div class="workflow-step">
+        <h4>Prepare it</h4>
+        <p>Clean and organize the data so the algorithm can use it consistently.</p>
+    </div>
+    <div class="workflow-step">
+        <h4>Train the model</h4>
+        <p>The algorithm looks for the pattern that best explains the training examples.</p>
+    </div>
+    <div class="workflow-step">
+        <h4>Evaluate it</h4>
+        <p>Test the model on data it hasn't seen to measure how accurate it really is.</p>
+    </div>
+    <div class="workflow-step">
+        <h4>Predict</h4>
+        <p>Use the trained model on new inputs, like a new temperature reading.</p>
+    </div>
+</div>
+{% endblock %}

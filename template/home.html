@@ -1,0 +1,117 @@
+{% extends "Mol.html" %}
+
+{% block title %}Home - Machine Learning{% endblock %}
+
+{% block extra_style %}
+<style>
+    .hero {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border-radius: 12px;
+        padding: 50px 40px;
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .hero h1 {
+        font-size: 2.3rem;
+        margin-bottom: 14px;
+    }
+
+    .hero p {
+        font-size: 1.05rem;
+        opacity: 0.92;
+        max-width: 640px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    .section-title {
+        color: #1e3c72;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        padding-bottom: 8px;
+        border-bottom: 3px solid #667eea;
+    }
+
+    .path-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        margin-bottom: 35px;
+    }
+
+    .path-card {
+        background: #f8f9ff;
+        border-radius: 8px;
+        padding: 24px;
+        text-decoration: none;
+        color: inherit;
+        border-left: 5px solid #667eea;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        display: block;
+    }
+
+    .path-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .path-card h3 {
+        color: #1e3c72;
+        font-size: 1.15rem;
+        margin-bottom: 8px;
+    }
+
+    .path-card p {
+        color: #555;
+        font-size: 0.92rem;
+        line-height: 1.5;
+    }
+
+    .project-note {
+        background: #f8f9ff;
+        border-radius: 8px;
+        padding: 20px 24px;
+        border-left: 5px solid #4CAF50;
+    }
+
+    .project-note p {
+        color: #444;
+        line-height: 1.6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1>Machine Learning</h1>
+    <p>An introduction to Machine Learning, its different types, and a simple example based on predicting ice cream sales from the day's temperature, using linear regression as a supervised learning technique.
+    </p>
+</div>
+
+<h2 class="section-title">Where to start</h2>
+<div class="path-grid">
+    <a class="path-card" href="{{ url_for('ml_concepts') }}">
+        <h3>Machine Learning Concepts</h3>
+        <p>What Machine Learning is and how a model actually learns from data.</p>
+    </a>
+    <a class="path-card" href="{{ url_for('ml_types') }}">
+        <h3>Machine Learning Types</h3>
+        <p>Supervised, unsupervised, and reinforcement learning.</p>
+    </a>
+    <a class="path-card" href="{{ url_for('lr_concepts') }}">
+        <h3>Linear Regression Concepts</h3>
+        <p>What is this technique and how does it work?</p>
+    </a>
+    <a class="path-card" href="{{ url_for('lr_application') }}">
+        <h3>Try It Yourself</h3>
+        <p>Enter a temperature and see the model predict ice cream sales in real time.</p>
+    </a>
+</div>
+
+<h2 class="section-title">About this project</h2>
+<div class="project-note">
+    <p>We trained a Linear Regression model on ice cream sales data to explore how temperature affects demand. Beyond the 'Los Helados de la esquina' use case, this site walks through the Machine Learning ideas behind the model, so you can see not just the prediction, but also the conceptual part that underpins it.</p>
+</div>
+{% endblock %}
