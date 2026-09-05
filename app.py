@@ -4,7 +4,6 @@ from LinearRegression import (
     buildRegressionPlot,
     N_RECORDS,
     R2_SCORE,
-    MAE_SCORE,
     SLOPE,
     INTERCEPT,
 )
@@ -67,7 +66,6 @@ def lr_application():
         plot_image=plot_image,
         n_records=N_RECORDS,
         r2_score=R2_SCORE,
-        mae_score=MAE_SCORE,
         slope=SLOPE,
         intercept=INTERCEPT,
     )
