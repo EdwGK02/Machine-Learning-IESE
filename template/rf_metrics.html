@@ -1,0 +1,180 @@
+{% extends "Mol.html" %}
+
+{% block title %}Random Forest Evaluation Metrics{% endblock %}
+
+{% block extra_style %}
+<style>
+    .rf-container {
+        max-width: 1000px;
+        margin: auto;
+    }
+
+    .rf-card {
+        background: #fff8f0;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 20px;
+        border-left: 4px solid #4ecdc4;
+    }
+
+    .rf-card h3 {
+        color: #ff6b9d;
+        margin-bottom: 15px;
+    }
+
+    .plot-container {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .plot-container img {
+        max-width: 100%;
+        border-radius: 8px;
+    }
+
+    .cm-legend {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .cm-item {
+        background: white;
+        border-radius: 8px;
+        padding: 14px;
+        text-align: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .cm-item strong {
+        display: block;
+        font-size: 1.5rem;
+        color: #ff6b9d;
+        margin-top: 5px;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 15px;
+        margin-top: 10px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .stat-card strong {
+        display: block;
+        font-size: 1.4rem;
+        color: #ff6b9d;
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="rf-container">
+
+    <h1 style="color:#ff6b9d; margin-bottom:8px;">
+        Random Forest Evaluation Metrics
+    </h1>
+
+    <p style="color:#555; margin-bottom:25px;">
+        Performance of the Random Forest model, measured on the 20% testing dataset
+        ({{ n_test }} records).
+    </p>
+
+
+    <div class="rf-card">
+
+        <h3>Confusion Matrix</h3>
+
+        <div class="plot-container">
+            <img
+                src="data:image/png;base64,{{ cm_image }}"
+                alt="Random Forest confusion matrix"
+            >
+        </div>
+
+        <div class="cm-legend">
+
+            <div class="cm-item">
+                True Positives (TP)
+                <strong>{{ tp }}</strong>
+            </div>
+
+            <div class="cm-item">
+                True Negatives (TN)
+                <strong>{{ tn }}</strong>
+            </div>
+
+            <div class="cm-item">
+                False Positives (FP)
+                <strong>{{ fp }}</strong>
+            </div>
+
+            <div class="cm-item">
+                False Negatives (FN)
+                <strong>{{ fn }}</strong>
+            </div>
+
+        </div>
+
+        <p style="margin-top:18px;">
+            The model correctly identified {{ tp }} students who passed and {{ tn }}
+            students who failed. It missed {{ fn }} students who actually passed but were
+            predicted as failing, and incorrectly predicted {{ fp }} students as passing
+            when they actually failed.
+        </p>
+
+    </div>
+
+
+    <div class="rf-card">
+
+        <h3>Classification Metrics</h3>
+
+        <div class="stats">
+
+            <div class="stat-card">
+                Accuracy
+                <strong>{{ (accuracy * 100) | round(2) }}%</strong>
+            </div>
+
+            <div class="stat-card">
+                Precision
+                <strong>{{ (precision * 100) | round(2) }}%</strong>
+            </div>
+
+            <div class="stat-card">
+                Recall
+                <strong>{{ (recall * 100) | round(2) }}%</strong>
+            </div>
+
+            <div class="stat-card">
+                F1-Score
+                <strong>{{ (f1 * 100) | round(2) }}%</strong>
+            </div>
+
+        </div>
+
+        <p style="margin-top:18px;">
+            The model classifies students correctly {{ (accuracy * 100) | round(2) }}% of
+            the time on unseen data. A precision of {{ (precision * 100) | round(2) }}%
+            means that when the model predicts a student will pass, it is right that
+            often, while a recall of {{ (recall * 100) | round(2) }}% shows how many of
+            the actual passing students the model was able to correctly identify.
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}
