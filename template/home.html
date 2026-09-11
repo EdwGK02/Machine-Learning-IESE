@@ -91,27 +91,69 @@
 </div>
 
 <h2 class="section-title">Where to start</h2>
+ 
+<div class="group-label">Machine Learning basics</div>
 <div class="path-grid">
     <a class="path-card" href="{{ url_for('ml_concepts') }}">
         <h3>Machine Learning Concepts</h3>
         <p>What Machine Learning is and how a model actually learns from data.</p>
     </a>
     <a class="path-card" href="{{ url_for('ml_types') }}">
-        <h3>Machine Learning Types</h3>
+        <h3>ML Types</h3>
         <p>Supervised, unsupervised, and reinforcement learning.</p>
     </a>
+</div>
+
+<div class="group-label">Linear Regression — ice cream sales</div>
+<div class="path-grid">
     <a class="path-card" href="{{ url_for('lr_concepts') }}">
         <h3>Linear Regression Concepts</h3>
         <p>What is this technique and how does it work?</p>
     </a>
     <a class="path-card" href="{{ url_for('lr_application') }}">
-        <h3>Try It Yourself</h3>
+        <h3>Try It</h3>
         <p>Enter a temperature and see the model predict ice cream sales in real time.</p>
     </a>
 </div>
 
+
+<div class="group-label">Logistic Regression — student performance</div>
+<div class="path-grid">
+    <a class="path-card" href="{{ url_for('logistic_concepts') }}">
+        <h3>Logistic Regression Concepts</h3>
+        <p>What is this technique and how does it work?</p>
+    </a>
+    <a class="path-card" href="{{ url_for('logistic_application') }}">
+        <h3>Try It</h3>
+        <p>How the model turns study hours into a probability of passing or failing.    </p>
+    </a>
+    <a class="path-card" href="{{ url_for('logistic_metrics') }}">
+        <h3>Evaluation Metrics</h3>
+        <p>Accuracy, precision, recall, and the confusion matrix behind the model.</p>
+    </a>
+</div>
+ 
+<div class="group-label">Random Forest — student performance</div>
+<div class="path-grid">
+    <a class="path-card" href="{{ url_for('rf_concepts') }}">
+        <h3>Random Forest Concepts</h3>
+        <p>How combining many decision trees improves on a single classifier.</p>
+    </a>
+    <a class="path-card" href="{{ url_for('rf_application') }}">
+        <h3>Try It</h3>
+        <p>Enter study hours, attendance, and previous score for a live prediction.</p>
+    </a>
+    <a class="path-card" href="{{ url_for('rf_metrics') }}">
+        <h3>Evaluation Metrics</h3>
+        <p>Accuracy, precision, recall, and the confusion matrix behind the model.</p>
+    </a>
+</div>
+ 
 <h2 class="section-title">About this project</h2>
 <div class="project-note">
-    <p>We trained a Linear Regression model on ice cream sales data to explore how temperature affects demand. Beyond the 'Los Helados de la esquina' use case, this site walks through the Machine Learning ideas behind the model, so you can see not just the prediction, but also the conceptual part that underpins it.</p>
+    <p>We started by implementing the Linear Regression model along with an applied example that predicts ice cream sales based on 
+    temperature. Then, we extended the project by adding two more classification models: — Logistic Regression and Random Forest. — 
+    Both models include an application example based on predicting whether a student is likely to pass a course, considering factors 
+    such as study hours, attendance, and previous grades. Each section explains the concepts used throughout the project.</p>
 </div>
 {% endblock %}
