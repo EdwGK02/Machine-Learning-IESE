@@ -150,6 +150,14 @@
                 </ul>
             </li>
             <li class="dropdown">
+                <a href="#">Logistic Regression</a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ url_for('logistic_concepts') }}">Concepts</a></li>
+                    <li><a href="{{ url_for('logistic_application') }}">Try It</a></li>
+                    <li><a href="{{ url_for('logistic_metrics') }}">Evaluation Metrics</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
                 <a href="#">Use Cases</a>
                 <ul class="dropdown-menu">
                     <li><a href="{{ url_for('use_case', n=1) }}">Use Case 1</a></li>
@@ -171,4 +179,3 @@
 
 </body>
 </html>
-
