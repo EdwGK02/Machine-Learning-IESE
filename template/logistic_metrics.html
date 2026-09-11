@@ -1,0 +1,180 @@
+{% extends "Mol.html" %}
+
+{% block title %}Logistic Regression - Evaluation Metrics - Data with Roots{% endblock %}
+
+{% block extra_style %}
+<style>
+    .intro-banner {
+        background: #ffe0ec;
+        border-radius: 18px;
+        padding: 36px 40px;
+        margin-bottom: 32px;
+    }
+
+    .intro-banner h1 {
+        color: #ff6b9d;
+        font-size: 2rem;
+        margin-bottom: 12px;
+    }
+
+    .intro-banner p {
+        color: #4a3f45;
+        line-height: 1.65;
+        max-width: 620px;
+    }
+
+    .section-title {
+        color: #4a3f45;
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 32px 0 18px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #ffe0ec;
+    }
+
+    .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 10px;
+    }
+
+    .metric-card {
+        background: #f6fcfb;
+        border-radius: 14px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .metric-card .value {
+        color: #4ecdc4;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .metric-card .label {
+        color: #4a3f45;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 6px;
+    }
+
+    .metric-card p {
+        color: #6b5c63;
+        font-size: 0.82rem;
+        line-height: 1.5;
+    }
+
+    .cm-section {
+        display: flex;
+        gap: 28px;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    .cm-image {
+        flex: 1 1 280px;
+    }
+
+    .cm-image img {
+        width: 100%;
+        border-radius: 14px;
+        border: 1px solid #ffe0ec;
+    }
+
+    .cm-breakdown {
+        flex: 1 1 240px;
+    }
+
+    .cm-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 16px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        font-size: 0.92rem;
+    }
+
+    .cm-row.tp { background: #e9fbf9; }
+    .cm-row.tn { background: #e9fbf9; }
+    .cm-row.fp { background: #fff0f5; }
+    .cm-row.fn { background: #fff0f5; }
+
+    .cm-row span:first-child {
+        color: #4a3f45;
+        font-weight: 600;
+    }
+
+    .cm-row span:last-child {
+        color: #6b5c63;
+    }
+
+    .dataset-note {
+        color: #6b5c63;
+        font-size: 0.88rem;
+        margin-top: 20px;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="intro-banner">
+    <h1>Evaluation Metrics</h1>
+    <p>These numbers show how well the Logistic Regression model performs on data it
+    never saw during training — the test set held out from the original {{ n_test }}
+    records used for evaluation.</p>
+</div>
+
+<div class="metric-grid">
+    <div class="metric-card">
+        <div class="value">{{ (accuracy * 100) | round(2) }}%</div>
+        <div class="label">Accuracy</div>
+        <p>Share of all predictions the model got right.</p>
+    </div>
+    <div class="metric-card">
+        <div class="value">{{ (precision * 100) | round(2) }}%</div>
+        <div class="label">Precision</div>
+        <p>Of the students predicted to pass, how many actually passed.</p>
+    </div>
+    <div class="metric-card">
+        <div class="value">{{ (recall * 100) | round(2) }}%</div>
+        <div class="label">Recall</div>
+        <p>Of the students who actually passed, how many the model caught.</p>
+    </div>
+    <div class="metric-card">
+        <div class="value">{{ (f1 * 100) | round(2) }}%</div>
+        <div class="label">F1 Score</div>
+        <p>A balance between precision and recall in a single number.</p>
+    </div>
+</div>
+
+<h2 class="section-title">Confusion matrix</h2>
+<div class="cm-section">
+    <div class="cm-image">
+        <img src="data:image/png;base64,{{ cm_image }}" alt="Confusion matrix">
+    </div>
+    <div class="cm-breakdown">
+        <div class="cm-row tp">
+            <span>True Positives</span>
+            <span>{{ tp }} — predicted Pass, actually passed</span>
+        </div>
+        <div class="cm-row tn">
+            <span>True Negatives</span>
+            <span>{{ tn }} — predicted Fail, actually failed</span>
+        </div>
+        <div class="cm-row fp">
+            <span>False Positives</span>
+            <span>{{ fp }} — predicted Pass, actually failed</span>
+        </div>
+        <div class="cm-row fn">
+            <span>False Negatives</span>
+            <span>{{ fn }} — predicted Fail, actually passed</span>
+        </div>
+    </div>
+</div>
+
+<p class="dataset-note">Metrics calculated on the {{ n_test }} test records set aside
+during training.</p>
+{% endblock %}

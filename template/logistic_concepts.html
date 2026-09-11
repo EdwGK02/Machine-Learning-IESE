@@ -1,0 +1,167 @@
+{% extends "Mol.html" %}
+ 
+{% block title %}Logistic Regression Concepts - Machine Learning{% endblock %}
+ 
+{% block extra_style %}
+<style>
+    .intro-banner {
+        background: #ffe0ec;
+        border-radius: 18px;
+        padding: 36px 40px;
+        margin-bottom: 32px;
+    }
+ 
+    .intro-banner h1 {
+        color: #ff6b9d;
+        font-size: 2rem;
+        margin-bottom: 12px;
+    }
+ 
+    .intro-banner p {
+        color: #4a3f45;
+        line-height: 1.65;
+        max-width: 620px;
+    }
+ 
+    .section-title {
+        color: #4a3f45;
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 32px 0 18px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #ffe0ec;
+    }
+ 
+    .equation-box {
+        background: #f6fcfb;
+        border-left: 5px solid #4ecdc4;
+        border-radius: 14px;
+        padding: 24px 28px;
+        margin-bottom: 28px;
+        text-align: center;
+    }
+ 
+    .equation-box .formula {
+        font-size: 1.4rem;
+        color: #4a3f45;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+ 
+    .equation-box p {
+        color: #4a3f45;
+        line-height: 1.6;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+ 
+    .term-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 16px;
+    }
+ 
+    .term-card {
+        background: #fff8f0;
+        border-left: 5px solid #ff6b9d;
+        border-radius: 14px;
+        padding: 18px 20px;
+    }
+ 
+    .term-card h3 {
+        color: #4a3f45;
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+ 
+    .term-card p {
+        color: #6b5c63;
+        font-size: 0.92rem;
+        line-height: 1.55;
+    }
+ 
+    .example-box {
+        background: #ffffff;
+        border: 1px solid #ffe0ec;
+        border-radius: 14px;
+        padding: 24px;
+        margin-top: 10px;
+    }
+ 
+    .example-box h3 {
+        color: #4a3f45;
+        font-size: 1.05rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+ 
+    .example-box p {
+        color: #6b5c63;
+        line-height: 1.6;
+        margin-bottom: 10px;
+    }
+ 
+    .example-box a {
+        color: #ff6b9d;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+ 
+{% block content %}
+<div class="intro-banner">
+    <h1>Logistic Regression</h1>
+    <p>Logistic regression is a supervised learning statistical method used to model the probability of a binary event 
+    occurring (two possible outcomes: 0 or 1, yes or no, true or false). Unlike linear regression, its output is always between 0 and 1, 
+    making it ideal for classification problems.</p>
+</div>
+ 
+<h2 class="section-title">From a line to a probability</h2>
+<div class="equation-box">
+    <div class="formula">p = 1 / (1 + e^-(mx + b))</div>
+    <p>The predictor variables and the binary variable to be predicted are collected. Then the coefficients (m and b) are fitted 
+    using maximum likelihood, which looks for the values that best explain the data. With those coefficients, the model applies 
+    the sigmoid function to the linear combination (mx + b) and returns a probability between 0 and 1. A threshold is then applied 
+    (usually 0.5): if the probability is higher, it is classified as 1; if lower, as 0. Finally, it is evaluated with metrics such 
+    as accuracy, precision, recall, and AUC-ROC.</p>
+</div>
+ 
+<h2 class="section-title">Key terms</h2>
+<div class="term-grid">
+    <div class="term-card">
+        <h3>Sigmoid function</h3>
+        <p>"S"-shaped function that transforms any real value into a range between 0 and 1, converting the linear combination 
+        into a valid probability. It is the heart of the model. Its formula is this: σ(z) = 1 / (1 + e^-z)</p>
+    </div>
+    <div class="term-card">
+        <h3>Maximum Likelihood</h3>
+        <p>Estimation method that finds the values of m and b that maximize the probability of having observed the data. 
+        It is used because there is no closed-form solution for logistic regression. 
+        Its formula is this: L(m, b) = Π pᵢ^yᵢ · (1 - pᵢ)^(1-yᵢ)</p>
+    </div>
+    <div class="term-card">
+        <h3>Odds</h3>
+        <p>Relationship between the probability of an event occurring and the probability of it not occurring. 
+        Logistic regression directly models its logarithm. Its formula is this: Odds = p / (1 - p)</p>
+    </div>
+    <div class="term-card">
+        <h3>Log-odds</h3>
+        <p>Natural logarithm of the odds. It connects probability (bounded between 0 and 1) with the predictor variables (unbounded),
+        allowing the model to be treated as a linear equation. Its formula is this: logit(p) = ln(p / (1 - p)) = mx + b</p>
+    </div>
+</div>
+ 
+<h2 class="section-title">In our project</h2>
+<div class="example-box">
+    <h3>Predicting whether a student passes</h3>
+    <p>Our model was trained on student records that pair weekly study hours with whether
+    the student passed or failed. It learns the relationship between study hours and the
+    probability of passing, then uses the 0.5 threshold to output a final Pass/Fail
+    prediction.</p>
+    <p>You can see this model in action, along with its accuracy, precision, recall, and
+    confusion matrix, on the
+    <a href="{{ url_for('logistic_application') }}">Try It</a> and
+    <a href="{{ url_for('logistic_metrics') }}">Evaluation Metrics</a> pages.</p>
+</div>
+{% endblock %}
