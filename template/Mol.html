@@ -44,7 +44,8 @@
         .nav-links {
             list-style: none;
             display: flex;
-            gap: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .nav-links > li {
@@ -54,9 +55,9 @@
         .nav-links > li > a {
             color: #4a3f45;
             text-decoration: none;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 500;
-            padding: 10px 18px;
+            padding: 10px 16px;
             border-radius: 999px;
             display: inline-block;
             transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
@@ -150,6 +151,22 @@
                 </ul>
             </li>
             <li class="dropdown">
+                <a href="#">Logistic Regression</a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ url_for('logistic_concepts') }}">Concepts</a></li>
+                    <li><a href="{{ url_for('logistic_application') }}">Try It</a></li>
+                    <li><a href="{{ url_for('logistic_metrics') }}">Evaluation Metrics</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Random Forest</a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ url_for('rf_concepts') }}">Concepts</a></li>
+                    <li><a href="{{ url_for('rf_application') }}">Try It</a></li>
+                    <li><a href="{{ url_for('rf_metrics') }}">Evaluation Metrics</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
                 <a href="#">Use Cases</a>
                 <ul class="dropdown-menu">
                     <li><a href="{{ url_for('use_case', n=1) }}">Use Case 1</a></li>
@@ -171,4 +188,3 @@
 
 </body>
 </html>
-
