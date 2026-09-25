@@ -39,6 +39,16 @@ from RandomForest import (
     FP as RF_FP,
     FN as RF_FN,
 )
+from KMeansManual import MANUAL_RESULT
+from KMeansCluster import (
+    N_RECORDS as UML_N_RECORDS,
+    CLUSTER_SUMMARY as UML_CLUSTER_SUMMARY,
+    CLUSTER_COLORS as UML_CLUSTER_COLORS,
+    CLUSTER_PLOT_B64 as UML_CLUSTER_PLOT,
+    SAMPLE_TABLE as UML_SAMPLE_TABLE,
+    SILHOUETTE_SCORE as UML_SILHOUETTE_SCORE,
+    SILHOUETTE_NOTE as UML_SILHOUETTE_NOTE,
+)
 
 app = Flask(__name__, template_folder="template")
 
@@ -222,6 +232,36 @@ def rf_metrics():
         tn=RF_TN,
         fp=RF_FP,
         fn=RF_FN,
+    )
+
+
+@app.route("/unsupervised/kmeans/concepts")
+def uml_concepts():
+    return render_template("uml_concepts.html")
+
+
+@app.route("/unsupervised/kmeans/manual-exercise")
+def uml_manual():
+    return render_template(
+        "uml_manual.html",
+        n_records=MANUAL_RESULT["n_records"],
+        initial_centroids=MANUAL_RESULT["initial_centroids"],
+        initial_plot=MANUAL_RESULT["initial_plot"],
+        iterations=MANUAL_RESULT["iterations"],
+    )
+
+
+@app.route("/unsupervised/kmeans/application")
+def uml_application():
+    return render_template(
+        "uml_application.html",
+        n_records=UML_N_RECORDS,
+        cluster_summary=UML_CLUSTER_SUMMARY,
+        cluster_colors=UML_CLUSTER_COLORS,
+        plot_image=UML_CLUSTER_PLOT,
+        sample_table=UML_SAMPLE_TABLE,
+        silhouette_score=UML_SILHOUETTE_SCORE,
+        silhouette_note=UML_SILHOUETTE_NOTE,
     )
 
 

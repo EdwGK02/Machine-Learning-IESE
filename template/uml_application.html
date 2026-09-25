@@ -1,0 +1,193 @@
+{% extends "Mol.html" %}
+
+{% block title %}Clustering Application{% endblock %}
+
+{% block extra_style %}
+<style>
+    .uml-card {
+        background: #fff8f0;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 20px;
+        border-left: 4px solid #4ecdc4;
+    }
+    .uml-card h3 { color: #ff6b9d; margin-bottom: 15px; }
+    .plot-container { text-align: center; margin: 15px 0 5px; }
+    .plot-container img { max-width: 100%; border-radius: 8px; }
+    .stat-card {
+        background: white; border-radius: 8px; padding: 15px; text-align: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08); height: 100%;
+    }
+    .stat-card strong { display:block; font-size: 1.4rem; color:#ff6b9d; margin-top:5px; }
+    .cluster-summary-card {
+        background: white; border-radius: 10px; padding: 18px; margin-bottom: 14px;
+        border-top: 4px solid var(--c-color, #4ecdc4);
+    }
+    table.uml-table { font-size: 0.85rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid px-0">
+
+    <h1 style="color:#ff6b9d; margin-bottom:8px;">Clustering Application</h1>
+    <p style="color:#555; margin-bottom:25px;">
+        K-Means (scikit-learn) applied to {{ n_records }} motorcycles described by 6
+        numerical variables, to discover data-driven technical segments.
+    </p>
+
+    <div class="uml-card">
+        <h3>1. Dataset and Variable Justification</h3>
+        <p>
+            The dataset contains <strong>{{ n_records }} motorcycles</strong> (well above the
+            1,000-record minimum), directly related to the group's registered topic
+            (grouping motorcycles according to their technical characteristics). Six
+            numerical variables were selected because together they describe a motorcycle's
+            mechanical identity and market positioning, letting K-Means separate segments
+            such as commuter, naked, sport and touring motorcycles on more than a single
+            dimension:
+        </p>
+        <div class="row g-2">
+            <div class="col-md-4"><div class="stat-card">Displacement<strong>cc</strong></div></div>
+            <div class="col-md-4"><div class="stat-card">Power<strong>HP</strong></div></div>
+            <div class="col-md-4"><div class="stat-card">Weight<strong>kg</strong></div></div>
+            <div class="col-md-4"><div class="stat-card">Price<strong>COP</strong></div></div>
+            <div class="col-md-4"><div class="stat-card">Fuel Economy<strong>km/L</strong></div></div>
+            <div class="col-md-4"><div class="stat-card">Max Speed<strong>km/h</strong></div></div>
+        </div>
+    </div>
+
+    <div class="uml-card">
+        <h3>2. Preprocessing</h3>
+        <ul>
+            <li><strong>Data validation:</strong> the generated dataset was checked for
+                missing values and out-of-range values before use (none were found, since it
+                is generated programmatically from realistic bounds per segment).</li>
+            <li><strong>Feature scaling (StandardScaler):</strong> the six variables use very
+                different scales (e.g. price in tens of millions vs. fuel economy in km/L).
+                Without scaling, K-Means' Euclidean distance would be dominated almost
+                entirely by price and displacement. Each variable was standardized to mean 0
+                and standard deviation 1 before clustering.</li>
+            <li><strong>Feature selection:</strong> all six variables were kept, since each
+                contributes a distinct aspect of a motorcycle's technical profile that the
+                others do not fully capture.</li>
+        </ul>
+    </div>
+
+    <div class="uml-card">
+        <h3>3. K-Means Configuration (scikit-learn)</h3>
+        <p style="margin:0;">
+            <code>KMeans(n_clusters=4, init="k-means++", n_init=10, max_iter=300, random_state=42)</code>
+        </p>
+        <ul class="mt-2">
+            <li><strong>n_clusters = 4:</strong> chosen to match the four motorcycle segments
+                identified conceptually for this topic (urban, naked/mixed-use, sport, touring).</li>
+            <li><strong>init = "k-means++":</strong> smarter centroid initialization than
+                purely random, which speeds up convergence and avoids poor local minima.</li>
+            <li><strong>n_init = 10:</strong> the algorithm is run 10 times with different
+                centroid seeds, keeping the best result (lowest inertia).</li>
+            <li><strong>random_state = 42:</strong> fixes the randomness so results are
+                reproducible for every teammate and every deployment.</li>
+        </ul>
+    </div>
+
+    <div class="uml-card">
+        <h3>4. Cluster Summary</h3>
+        <div class="row g-3">
+            {% for c in cluster_summary %}
+            <div class="col-md-6">
+                <div class="cluster-summary-card" style="--c-color: {{ cluster_colors[loop.index0] }};">
+                    <h5 style="color:#4a3f45;">Cluster {{ c.cluster }}: {{ c.name }}</h5>
+                    <p style="font-size:0.85rem; color:#777;">{{ c.description }}</p>
+                    <p><span class="badge bg-secondary">{{ c.count }} motorcycles ({{ c.pct }}%)</span></p>
+                    <table class="table table-sm mb-0">
+                        <tbody>
+                            <tr><td>Displacement</td><td>{{ c.centroid.engine_displacement_cc }} cc</td></tr>
+                            <tr><td>Power</td><td>{{ c.centroid.engine_power_hp }} HP</td></tr>
+                            <tr><td>Weight</td><td>{{ c.centroid.weight_kg }} kg</td></tr>
+                            <tr><td>Price</td><td>{{ "{:,}".format(c.centroid.price_cop) }} COP</td></tr>
+                            <tr><td>Fuel Economy</td><td>{{ c.centroid.fuel_consumption_kmpl }} km/L</td></tr>
+                            <tr><td>Max Speed</td><td>{{ c.centroid.max_speed_kmph }} km/h</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="uml-card">
+        <h3>5. Scatter Plot: Clusters and Centroids</h3>
+        <div class="plot-container">
+            <img src="data:image/png;base64,{{ plot_image }}" alt="K-Means clusters scatter plot">
+        </div>
+    </div>
+
+    <div class="uml-card">
+        <h3>6. Sample of Labeled Records</h3>
+        <p>A representative sample of {{ sample_table|length }} motorcycles with their assigned cluster:</p>
+        <div class="table-responsive" style="max-height: 340px; overflow-y:auto;">
+            <table class="table table-sm table-striped uml-table">
+                <thead class="table-light" style="position: sticky; top:0;">
+                    <tr>
+                        <th>ID</th><th>cc</th><th>HP</th><th>kg</th><th>Price (COP)</th>
+                        <th>km/L</th><th>km/h</th><th>Cluster</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for r in sample_table %}
+                    <tr>
+                        <td>{{ r.motorcycle_id }}</td>
+                        <td>{{ r.engine_displacement_cc }}</td>
+                        <td>{{ r.engine_power_hp }}</td>
+                        <td>{{ r.weight_kg }}</td>
+                        <td>{{ "{:,.0f}".format(r.price_cop) }}</td>
+                        <td>{{ r.fuel_consumption_kmpl }}</td>
+                        <td>{{ r.max_speed_kmph }}</td>
+                        <td><span class="badge" style="background:{{ cluster_colors[r.cluster-1] }};">{{ r.cluster }}</span></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="uml-card">
+        <h3>7. Clustering Evaluation: Silhouette Score</h3>
+        <div class="row align-items-center g-3">
+            <div class="col-md-4">
+                <div class="stat-card">Silhouette Score<strong>{{ silhouette_score }}</strong></div>
+            </div>
+            <div class="col-md-8">
+                <p style="margin:0;">
+                    The silhouette score ranges from -1 to 1 and measures how similar each
+                    motorcycle is to its own cluster compared to the nearest other cluster.
+                    Values close to 1 indicate compact, well-separated clusters; values near
+                    0 indicate overlapping clusters; negative values suggest records may be
+                    in the wrong cluster. A score of <strong>{{ silhouette_score }}</strong>
+                    indicates: <em>{{ silhouette_note }}</em>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="uml-card">
+        <h3>8. Interpretation: What Each Cluster Means</h3>
+        <p style="margin:0;">
+            The four clusters map cleanly onto real motorcycle market segments: Cluster 1
+            groups small, cheap, fuel-efficient commuter bikes; Cluster 2 groups mid-range
+            naked/all-purpose bikes; Cluster 3 groups powerful, fast, low-economy sport bikes
+            at a premium price; and Cluster 4 groups the heaviest, large-displacement touring
+            and adventure bikes, prioritizing comfort and range over top speed. This matches
+            the intuitive segmentation the group expected from the topic, but K-Means derived
+            it purely from the numerical similarity between motorcycles, without being told
+            the segment names in advance -- which is the core value of unsupervised learning
+            for this kind of problem: it can reveal (or confirm) a market structure directly
+            from the data.
+        </p>
+    </div>
+
+</div>
+
+{% endblock %}
