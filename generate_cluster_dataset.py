@@ -1,28 +1,3 @@
-"""
-Generates the dataset used by the SCIKIT-LEARN Clustering Application
-(Part 2.3), related to the group's registered topic (grouping motorcycles
-by technical characteristics). At least 1,000 records and 2+ numerical
-variables are required; this generates 1,200 records with 6 numerical
-variables:
-
-    - engine_displacement_cc : engine displacement (cc)
-    - engine_power_hp        : engine power (HP)
-    - weight_kg              : curb weight (kg)
-    - price_cop              : retail price (COP)
-    - fuel_consumption_kmpl  : fuel economy (km/L)
-    - max_speed_kmph         : top speed (km/h)
-
-The data is synthetic but built from realistic, internally-consistent
-relationships between the variables (bigger engines -> more power, more
-weight, higher top speed, lower fuel economy, higher price), across four
-plausible motorcycle segments, so K-Means has genuine structure to find:
-
-    1. Urban / commuter          2. Naked / mixed-use
-    3. Sport / high-performance  4. Touring / adventure
-
-random_state is fixed so the dataset is reproducible for every teammate.
-"""
-
 import os
 import numpy as np
 import pandas as pd
@@ -65,14 +40,14 @@ for seg_name, cfg in SEGMENTS.items():
             "price_cop": round(float(price[i]), -3),
             "fuel_consumption_kmpl": round(float(kmpl[i]), 1),
             "max_speed_kmph": round(float(speed[i]), 0),
-            "_true_segment": seg_name,  # kept only for our own sanity-check, dropped below
+            "_true_segment": seg_name,  
         })
 
 df = pd.DataFrame(rows)
 df = df.sample(frac=1, random_state=7).reset_index(drop=True)  # shuffle
 df.insert(0, "motorcycle_id", [f"MC{i+1:04d}" for i in range(len(df))])
 
-true_segment = df.pop("_true_segment")  # keep separately, not part of the numerical features shown to K-Means
+true_segment = df.pop("_true_segment") 
 
 out_path = os.path.join(os.path.dirname(__file__), "data", "motorcycles_clustering.csv")
 os.makedirs(os.path.dirname(out_path), exist_ok=True)
