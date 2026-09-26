@@ -77,18 +77,22 @@ CLUSTER_PROFILES = [
     {
         "name": "Urban / Commuter",
         "description": "Small-displacement, lightweight, fuel-efficient and affordable motorcycles built for daily city commuting.",
+        "business_note": "The lowest price and highest fuel economy of all segments make this the entry-level, high-volume market for daily city transport.",
     },
     {
         "name": "Naked / Mixed-Use",
         "description": "Mid-range displacement and price, balancing power and efficiency for both city and short-trip riding.",
+        "business_note": "Centroid values sit between Urban and Sport on every dimension, consistent with a do-it-all bike for riders who want more power without sacrificing affordability.",
     },
     {
         "name": "Sport / High-Performance",
         "description": "High power-to-weight ratio and top speed, aimed at performance riders; higher price, lower fuel economy.",
+        "business_note": "Highest top speed and power-to-weight ratio in the dataset, paired with the steepest fuel-economy penalty — buyers here pay for performance, not efficiency.",
     },
     {
         "name": "Touring / Adventure",
         "description": "Large displacement and the highest weight, built for long-distance comfort and stability rather than outright speed.",
+        "business_note": "Despite comparable displacement to Sport, this segment is far heavier and slightly slower, reflecting a design priority of long-distance comfort over acceleration.",
     },
 ][:K]
 
@@ -102,15 +106,11 @@ for i in range(K):
         "cluster": i + 1,
         "name": CLUSTER_PROFILES[i]["name"] if i < len(CLUSTER_PROFILES) else f"Cluster {i+1}",
         "description": CLUSTER_PROFILES[i]["description"] if i < len(CLUSTER_PROFILES) else "",
+        "business_note": CLUSTER_PROFILES[i]["business_note"] if i < len(CLUSTER_PROFILES) else "",  # <-- nueva línea
         "count": int(mask.sum()),
         "pct": round(100 * mask.sum() / N_RECORDS, 1),
         "centroid": {
-            "engine_displacement_cc": round(float(centroid[0]), 1),
-            "engine_power_hp": round(float(centroid[1]), 1),
-            "weight_kg": round(float(centroid[2]), 1),
-            "price_cop": int(round(centroid[3], -3)),
-            "fuel_consumption_kmpl": round(float(centroid[4]), 1),
-            "max_speed_kmph": round(float(centroid[5]), 1),
+            # ... (esto no cambia)
         },
     })
 

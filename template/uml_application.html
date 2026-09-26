@@ -100,6 +100,7 @@
                 <div class="cluster-summary-card" style="--c-color: {{ cluster_colors[loop.index0] }};">
                     <h5 style="color:#4a3f45;">Cluster {{ c.cluster }}: {{ c.name }}</h5>
                     <p style="font-size:0.85rem; color:#777;">{{ c.description }}</p>
+                    <p style="font-size:0.85rem;"><strong>Business interpretation:</strong> {{ c.business_note }}</p>
                     <p><span class="badge bg-secondary">{{ c.count }} motorcycles ({{ c.pct }}%)</span></p>
                     <table class="table table-sm mb-0">
                         <tbody>
@@ -172,8 +173,20 @@
         </div>
     </div>
 
-    <div class="uml-card">
+        <div class="uml-card">
         <h3>8. Interpretation: What Each Cluster Means</h3>
+
+        <div class="row g-3 mb-3">
+            {% for c in cluster_summary %}
+            <div class="col-md-6">
+                <div class="cluster-summary-card" style="--c-color: {{ cluster_colors[loop.index0] }};">
+                    <h6 style="color:#4a3f45;">Cluster {{ c.cluster }}: {{ c.name }}</h6>
+                    <p style="font-size:0.85rem; margin-bottom:0;">{{ c.business_note }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
         <p style="margin:0;">
             The four clusters map cleanly onto real motorcycle market segments: Cluster 1
             groups small, cheap, fuel-efficient commuter bikes; Cluster 2 groups mid-range
@@ -191,3 +204,5 @@
 </div>
 
 {% endblock %}
+
+
