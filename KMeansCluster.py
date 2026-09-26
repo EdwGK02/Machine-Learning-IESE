@@ -1,14 +1,3 @@
-"""
-Part 2.3 - Clustering Application (scikit-learn).
-
-Loads the 1,200-record motorcycle dataset (6 numerical variables), applies
-preprocessing (StandardScaler) and K-Means (scikit-learn) to discover
-groups of motorcycles with similar technical characteristics, then exposes
-everything the Flask templates need: the labeled table, the per-cluster
-summary (size + centroid, in original units), the silhouette score, a 2D
-scatter plot, and short interpretation text for each cluster.
-"""
-
 import os
 import io
 import base64
@@ -44,30 +33,28 @@ FEATURE_LABELS = {
     "max_speed_kmph": "Max Speed (km/h)",
 }
 
-K = 4  # matches the 4 segments the group's brainstorm identified
+K = 4  
 RANDOM_STATE = 42
 
 N_RECORDS = len(df)
 
-# --- Preprocessing: standardize so displacement/price (large scales) don't
-#     dominate the Euclidean distance used internally by K-Means. ---
 X = df[FEATURES].to_numpy(dtype=float)
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-# --- K-Means (scikit-learn) ---
+
 kmeans = KMeans(n_clusters=K, init="k-means++", n_init=10, max_iter=300, random_state=RANDOM_STATE)
 labels = kmeans.fit_predict(X_scaled)
 
-df["cluster"] = labels + 1  # 1-indexed for display
+df["cluster"] = labels + 1
 
 SILHOUETTE_SCORE = round(float(silhouette_score(X_scaled, labels)), 4)
 
-# --- Cluster centroids, converted back to original units for interpretability ---
+
 centroids_scaled = kmeans.cluster_centers_
 centroids_original = scaler.inverse_transform(centroids_scaled)
 
-# --- Order clusters by displacement so labels read from "smallest" to "biggest" ---
+
 order = np.argsort(centroids_original[:, FEATURES.index("engine_displacement_cc")])
 rank_of = {old: new for new, old in enumerate(order)}
 df["cluster"] = df["cluster"].apply(lambda c: rank_of[c - 1] + 1)
@@ -110,24 +97,22 @@ for i in range(K):
         "count": int(mask.sum()),
         "pct": round(100 * mask.sum() / N_RECORDS, 1),
         "centroid": {
-            # ... (esto no cambia)
+            "engine_displacement_cc": round(float(centroid[0]), 1),
+            "engine_power_hp": round(float(centroid[1]), 1),
+            "weight_kg": round(float(centroid[2]), 1),
+            "price_cop": int(round(centroid[3], -3)),
+            "fuel_consumption_kmpl": round(float(centroid[4]), 1),
+            "max_speed_kmph": round(float(centroid[5]), 1),
         },
     })
 
 
 def get_sample_table(n=25):
-    """A representative sample of labeled records for the 'table of records and clusters' requirement."""
     sample = df.sample(n=n, random_state=RANDOM_STATE).sort_values("cluster")
     return sample[["motorcycle_id"] + FEATURES + ["cluster"]].to_dict(orient="records")
 
 
 def build_cluster_plot():
-    """
-    2D scatter: displacement (cc) vs price (COP) -- the two variables with the
-    clearest separation and the same axes used in the manual exercise, which
-    makes the manual-vs-application comparison easy to follow in the report.
-    Centroids are shown converted back to these two original-unit axes.
-    """
     fig, ax = plt.subplots(figsize=(8, 5.5))
 
     x_feat, y_feat = "engine_displacement_cc", "price_cop"

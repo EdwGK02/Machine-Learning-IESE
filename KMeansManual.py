@@ -1,27 +1,3 @@
-"""
-Part 1 - Manual K-Means Simulation.
-
-Implements K-Means "by hand" (no scikit-learn) over the 100-record
-motorcycle dataset (engine_displacement_cc, price_cop), so every step
-required by the rubric is explicit and reproducible:
-
-    - 3 initial centroids, chosen manually (one representative motorcycle
-      from each expected segment: urban, mid-size, high-performance).
-    - 3 full iterations. Each iteration computes:
-        * Euclidean distance from every record to the 3 centroids.
-        * The cluster assignment (nearest centroid).
-        * The updated centroids (mean of each cluster's assigned points).
-        * The within-cluster variance (average squared distance to the
-          cluster's centroid), used to compare iterations.
-    - Scatter plots: the initial state and each of the 3 iterations.
-
-Because price is on a much larger numeric scale than displacement, both
-variables are standardized (z-scores) purely for the distance/assignment
-math, exactly as it would be explained in the report -- this keeps price
-from dominating the Euclidean distance. Plots and tables are shown in the
-ORIGINAL units (cc, COP) so they stay interpretable.
-"""
-
 import os
 import io
 import base64
@@ -37,7 +13,7 @@ df = pd.read_csv(DATA_PATH)
 
 X_raw = df[["engine_displacement_cc", "price_cop"]].to_numpy(dtype=float)
 
-# --- Standardize for distance calculations (mean 0, std 1) ---
+
 MEAN = X_raw.mean(axis=0)
 STD = X_raw.std(axis=0)
 X = (X_raw - MEAN) / STD
@@ -45,10 +21,7 @@ X = (X_raw - MEAN) / STD
 CLUSTER_NAMES = ["Cluster 1 (Urban)", "Cluster 2 (Mid-size)", "Cluster 3 (High-performance)"]
 CLUSTER_COLORS = ["#4ecdc4", "#ff6b9d", "#ffb347"]
 
-# --- 3 initial centroids, picked manually from representative real rows ---
-# Chosen as one clearly urban, one clearly mid-size, one clearly high-end record,
-# so the manual simulation starts from a defensible, explainable choice
-# rather than a random pick.
+
 INITIAL_IDX_RAW = [
     int(df["engine_displacement_cc"].sub(125).abs().idxmin()),   # near 125cc -> urban
     int(df["engine_displacement_cc"].sub(400).abs().idxmin()),   # near 400cc -> mid-size
@@ -66,13 +39,11 @@ def _to_raw(centroids_std):
 
 
 def _euclidean(points, centroids):
-    """points: (n,2) std space, centroids: (k,2) std space -> (n,k) distances."""
     diff = points[:, None, :] - centroids[None, :, :]
     return np.sqrt((diff ** 2).sum(axis=2))
 
 
 def _variance(points, centroids, labels):
-    """Average squared distance of each point to its assigned centroid (per cluster + overall)."""
     per_cluster = []
     for k in range(len(centroids)):
         mask = labels == k
@@ -86,20 +57,14 @@ def _variance(points, centroids, labels):
 
 
 def run_manual_kmeans(n_iterations=3):
-    """
-    Runs the manual simulation and returns everything the templates need:
-    a list of per-iteration dicts (table rows, centroids, variance) plus
-    base64-encoded plots (initial state + each iteration).
-    """
     centroids_std = _to_std(INITIAL_CENTROIDS_RAW.copy())
     iterations = []
     plots = {"initial": _plot_state(X_raw, None, INITIAL_CENTROIDS_RAW, "Initial Records and Centroids")}
 
     for it in range(1, n_iterations + 1):
-        distances = _euclidean(X, centroids_std)  # (100, 3), standardized space
+        distances = _euclidean(X, centroids_std) 
         labels = distances.argmin(axis=1)
 
-        # Table rows (first + all, template can decide how many to show)
         rows = []
         for i in range(len(df)):
             rows.append({
@@ -175,7 +140,4 @@ def _plot_state(points_raw, labels, centroids_raw, title):
     buf.seek(0)
     return base64.b64encode(buf.read()).decode("utf-8")
 
-
-# Pre-compute once at import time so every request reuses the same result
-# (identical to how LinearRegression.py / RandomForest.py train once at import).
 MANUAL_RESULT = run_manual_kmeans()
