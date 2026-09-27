@@ -1,0 +1,142 @@
+{% extends "Mol.html" %}
+
+{% block title %}Random Forest Concepts{% endblock %}
+
+{% block extra_style %}
+<style>
+    .rf-container {
+        max-width: 1000px;
+        margin: auto;
+    }
+
+    .rf-card {
+        background: #fff8f0;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 20px;
+        border-left: 4px solid #4ecdc4;
+    }
+
+    .rf-card h3 {
+        color: #ff6b9d;
+        margin-bottom: 15px;
+    }
+
+    .rf-card ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .rf-card li {
+        margin-bottom: 8px;
+        line-height: 1.5;
+    }
+
+    .rf-list-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+        margin-top: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="rf-container">
+
+    <h1 style="color:#ff6b9d; margin-bottom:8px;">
+        Random Forest Concepts
+    </h1>
+
+    <p style="color:#555; margin-bottom:25px;">
+        Understanding the theory behind the Random Forest classification algorithm.
+    </p>
+
+
+    <div class="rf-card">
+        <h3>What is Random Forest?</h3>
+        <p>
+            Random Forest is a supervised learning algorithm that builds many individual
+            decision trees during training and combines their outputs to make a single,
+            more reliable prediction. Each tree is trained on a random subset of the data
+            and a random subset of the features, so no two trees in the forest see the
+            exact same information.
+        </p>
+    </div>
+
+
+    <div class="rf-card">
+        <h3>How Does It Work?</h3>
+        <p>
+            The general idea is often called "the wisdom of the crowd": instead of trusting
+            one decision tree, Random Forest trains a large collection of them and lets them
+            vote.
+        </p>
+        <ul>
+            <li>Random samples of the training data are drawn (with replacement) to build each tree — a technique known as bagging.</li>
+            <li>At every split inside a tree, only a random subset of the available features is considered, which keeps the trees from all making the same decisions.</li>
+            <li>For a classification problem, each tree produces its own predicted class.</li>
+            <li>The forest's final prediction is the class chosen by the majority of the trees (majority voting).</li>
+        </ul>
+    </div>
+
+
+    <div class="rf-card">
+        <h3>What Kind of Problems Can It Solve?</h3>
+        <p>
+            Random Forest can be used for both classification (predicting a category, such as
+            Pass/Fail) and regression (predicting a continuous number). It works well with
+            tabular data that contains a mix of numeric and categorical features, and it is
+            commonly applied to problems such as credit risk scoring, medical diagnosis,
+            customer churn prediction, and — as in this project — predicting whether a
+            student will pass or fail a course.
+        </p>
+    </div>
+
+
+    <div class="rf-list-grid">
+
+        <div class="rf-card">
+            <h3>Main Characteristics</h3>
+            <ul>
+                <li>Ensemble method built from many decision trees.</li>
+                <li>Combines bagging with random feature selection.</li>
+                <li>Uses majority voting for classification tasks.</li>
+                <li>Can measure which features matter most for the prediction.</li>
+            </ul>
+        </div>
+
+        <div class="rf-card">
+            <h3>Advantages</h3>
+            <ul>
+                <li>Generally more accurate and stable than a single decision tree.</li>
+                <li>Less prone to overfitting because errors from individual trees tend to cancel out.</li>
+                <li>Handles non-linear relationships between features and the target well.</li>
+                <li>Works with several independent variables at the same time.</li>
+            </ul>
+        </div>
+
+        <div class="rf-card">
+            <h3>Limitations</h3>
+            <ul>
+                <li>Harder to interpret than a single decision tree — it behaves more like a "black box".</li>
+                <li>Training many trees can be slower and more resource-intensive.</li>
+                <li>Can still struggle when the classes in the data are very imbalanced.</li>
+            </ul>
+        </div>
+
+        <div class="rf-card">
+            <h3>Real-World Example</h3>
+            <p style="margin:0;">
+                A bank uses Random Forest to decide whether to approve a loan application,
+                combining variables such as income, credit history, and existing debt to
+                classify each applicant as "Low Risk" or "High Risk".
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,195 @@
+{% extends "Mol.html" %}
+
+{% block title %}Unsupervised Machine Learning Concepts{% endblock %}
+
+{% block extra_style %}
+<style>
+    .uml-card {
+        background: #fff8f0;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 20px;
+        border-left: 4px solid #4ecdc4;
+    }
+
+    .uml-card h3 {
+        color: #ff6b9d;
+        margin-bottom: 15px;
+    }
+
+    .uml-card ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .uml-card li {
+        margin-bottom: 8px;
+        line-height: 1.5;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid px-0">
+
+    <h1 style="color:#ff6b9d; margin-bottom:8px;">Unsupervised Machine Learning</h1>
+    <p style="color:#555; margin-bottom:25px;">
+        What it means to learn from data without labels, and how the K-Means algorithm turns
+        that idea into a concrete grouping procedure.
+    </p>
+
+    <div class="uml-card">
+        <h3>Problem Context: Why Segment Motorcycles at All?</h3>
+        <p>
+            The motorcycle market is not a single, uniform product line -- it is a
+            collection of very different vehicles built for very different riders. A
+            student commuting 8km to class every day, a courier riding 200km a week for
+            deliveries, and a rider who wants speed on weekends all buy "a motorcycle," but
+            they are not comparing the same options: displacement, price, fuel economy and
+            top speed trade off against each other in ways that naturally split the market
+            into recognizable segments (urban/commuter, naked/mixed-use, sport, and
+            touring/adventure). Manufacturers and dealers already segment their catalogs
+            this way informally, using marketing labels. The problem this project addresses
+            is whether that same structure can be <em>recovered directly from the
+            underlying numbers</em>, without relying on a manufacturer's label or a human
+            analyst's judgment call -- which matters in practice for tasks such as pricing
+            strategy, targeted marketing, inventory planning per segment, or building a
+            recommendation feature that suggests "similar motorcycles" to a buyer based on
+            technical characteristics rather than brand or category names.
+        </p>
+        <p style="margin:0;">
+            This is precisely the kind of problem unsupervised learning is suited for: there
+            is no historical "correct answer" column telling us which segment a motorcycle
+            belongs to (unlike the Pass/Fail label used by the Logistic Regression and
+            Random Forest modules), only a set of measurable technical attributes. Framing
+            this as a clustering problem lets the data itself reveal whether meaningful,
+            separable groups exist, and how many.
+        </p>
+    </div>
+
+    <div class="uml-card">
+        <h3>What Is Unsupervised Learning?</h3>
+        <p>
+            Unsupervised learning trains algorithms on data that has <strong>no predefined
+            labels or target variable</strong>. Unlike the Linear Regression, Logistic
+            Regression, and Random Forest models earlier in this project -- which all learn
+            to predict a known outcome (ice cream sales, pass/fail) -- an unsupervised
+            algorithm only receives the input features and must discover structure in them
+            by itself. This is useful whenever the goal is to explore a dataset and find
+            natural groupings that were not defined in advance.
+        </p>
+    </div>
+
+    <div class="uml-card">
+        <h3>What Is Clustering?</h3>
+        <p>
+            Clustering is the task of partitioning a dataset into groups ("clusters") such
+            that records inside the same cluster are more similar to each other than to
+            records in other clusters, according to some distance measure (most commonly
+            Euclidean distance). No cluster is "correct" or "incorrect" in the way a
+            classification label is -- clusters are judged by how compact and well
+            separated they are.
+        </p>
+    </div>
+
+    <div class="uml-card">
+        <h3>How K-Means Works</h3>
+        <p>K-Means is the most widely used clustering algorithm. Given a number of clusters
+           <em>k</em>, it works iteratively:</p>
+        <ul>
+            <li><strong>1. Initialization:</strong> choose <em>k</em> initial centroids
+                (points in the same feature space as the data).</li>
+            <li><strong>2. Assignment:</strong> compute the Euclidean distance from every
+                record to each centroid, and assign each record to its nearest centroid.</li>
+            <li><strong>3. Update:</strong> recompute each centroid as the mean (average)
+                of every record currently assigned to it.</li>
+            <li><strong>4. Repeat:</strong> steps 2-3 are repeated until the assignments no
+                longer change (convergence) or a maximum number of iterations is reached.</li>
+        </ul>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="uml-card h-100">
+                <h3>The Role of Centroids</h3>
+                <p style="margin:0;">
+                    A centroid is the "center of mass" of a cluster -- the average position of
+                    all the records assigned to it. Centroids are what the algorithm actually
+                    moves during training; the final centroids summarize the typical member
+                    of each cluster (e.g. the "average motorcycle" in a segment), which makes
+                    them directly useful for interpreting what each cluster represents.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="uml-card h-100">
+                <h3>The Role of Iterations</h3>
+                <p style="margin:0;">
+                    Each iteration should reduce (or keep unchanged) the total within-cluster
+                    variance -- how spread out the points are around their centroid. This
+                    variance is exactly what we track iteration by iteration in the manual
+                    exercise below: as centroids move closer to the true center of their
+                    group, the variance decreases and the clusters stabilize.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="uml-card">
+        <h3>Why These Six Variables?</h3>
+        <p>Each variable used in the Clustering Application captures a different, mostly
+           independent aspect of a motorcycle's identity -- together they describe both its
+           mechanical size and its practical use case:</p>
+        <ul>
+            <li><strong>Engine displacement (cc):</strong> the standard technical proxy for a
+                motorcycle's overall category. It is the number riders and dealers already
+                use informally to describe "how big" a motorcycle is (a 125cc vs. a 900cc),
+                and it correlates with most other variables, which makes it the natural
+                anchor variable and the one used alone in the Part 1 manual exercise.</li>
+            <li><strong>Engine power (HP):</strong> two motorcycles can share a displacement
+                but differ in tuning -- power captures the performance dimension that
+                displacement alone does not fully explain, separating, for example, a
+                touring engine tuned for torque from a sport engine tuned for top-end power.</li>
+            <li><strong>Weight (kg):</strong> distinguishes lightweight commuter and naked
+                motorcycles from heavier touring/adventure motorcycles built with larger
+                frames, fairings and fuel tanks for long-distance comfort -- two motorcycles
+                with similar displacement can have very different weight depending on their
+                intended use.</li>
+            <li><strong>Price (COP):</strong> reflects not only displacement and power but
+                also brand positioning, included technology (ABS, digital dashboards) and
+                build quality, which is why it is not perfectly redundant with the
+                mechanical variables and adds a market-positioning signal.</li>
+            <li><strong>Fuel consumption (km/L):</strong> directly relevant to the buyer's
+                cost of ownership and typically moves inversely with displacement and power
+                -- it is the variable that most clearly separates economical commuter
+                motorcycles from performance-oriented ones.</li>
+            <li><strong>Maximum speed (km/h):</strong> captures the performance ceiling of
+                the motorcycle, which is what most clearly separates sport motorcycles from
+                touring motorcycles even when their displacement and price are similar.</li>
+        </ul>
+        <p style="margin:0;">
+            Used together, these six variables let K-Means separate motorcycles along more
+            than one axis at once (e.g. two motorcycles with similar displacement but very
+            different weight and top speed can still end up in different clusters), which is
+            closer to how a real buyer or dealer compares motorcycles than relying on
+            displacement alone.
+        </p>
+    </div>
+
+    <div class="uml-card">
+        <h3>Why K-Means for This Project</h3>
+        <p style="margin:0;">
+            Our group's topic is grouping motorcycles according to their technical
+            characteristics (engine displacement, power, weight, price, fuel consumption,
+            and top speed) without assuming beforehand which segment (urban, sport,
+            touring, etc.) each motorcycle belongs to. K-Means lets those segments emerge
+            directly from the numerical similarity between motorcycles, which is then
+            validated and interpreted using the silhouette score and the centroid values
+            (see the <a href="{{ url_for('uml_application') }}">Clustering Application</a>).
+        </p>
+    </div>
+
+</div>
+
+{% endblock %}

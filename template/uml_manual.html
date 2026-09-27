@@ -1,0 +1,203 @@
+{% extends "Mol.html" %}
+
+{% block title %}Manual K-Means Exercise{% endblock %}
+
+{% block extra_style %}
+<style>
+    .uml-card {
+        background: #fff8f0;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 20px;
+        border-left: 4px solid #4ecdc4;
+    }
+    .uml-card h3 { color: #ff6b9d; margin-bottom: 15px; }
+    .plot-container { text-align: center; margin: 15px 0 5px; }
+    .plot-container img { max-width: 100%; border-radius: 8px; }
+    .iteration-badge {
+        display: inline-block; background: #4ecdc4; color: white;
+        border-radius: 999px; padding: 4px 14px; font-weight: 600; font-size: 0.85rem;
+        margin-bottom: 10px;
+    }
+    .var-pill {
+        display: inline-block; background: white; border-radius: 8px;
+        padding: 8px 14px; margin: 4px 6px 4px 0; box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        font-size: 0.9rem;
+    }
+    .var-pill strong { color: #ff6b9d; }
+    table.uml-table { font-size: 0.85rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid px-0">
+
+    <h1 style="color:#ff6b9d; margin-bottom:8px;">Manual K-Means Exercise</h1>
+    <p style="color:#555; margin-bottom:25px;">
+        A fully worked, step-by-step K-Means simulation (no scikit-learn) over
+        {{ n_records }} motorcycles, using two numerical variables.
+    </p>
+
+    <div class="uml-card">
+        <h3>1. Dataset and Variables</h3>
+        <p>
+            The dataset contains <strong>{{ n_records }} motorcycles</strong> described by two
+            numerical variables, both directly related to the group's topic (grouping
+            motorcycles by technical characteristics):
+        </p>
+        <ul>
+            <li><strong>Engine displacement (cc):</strong> the total volume swept by the
+                engine's pistons, in cubic centimeters. It is the standard indicator of a
+                motorcycle's mechanical size/category, and correlates strongly with power,
+                weight and intended use.</li>
+            <li><strong>Price (COP):</strong> the motorcycle's retail price in Colombian
+                pesos, which reflects displacement, brand positioning and included
+                technology.</li>
+        </ul>
+        <p style="margin:0;">
+            The 100 records were synthetically generated (see
+            <code>generate_manual_dataset.py</code> in the repository) around three realistic
+            market segments -- urban/commuter, mid-size, and high-performance -- so the
+            manual simulation has genuine structure to converge to.
+        </p>
+    </div>
+
+    <div class="uml-card">
+        <h3>2. Initial Centroids</h3>
+        <p>Three initial centroids were chosen manually, each taken from an actual record
+           representative of one expected segment (a clearly urban, a clearly mid-size, and
+           a clearly high-performance motorcycle), rather than picked at random:</p>
+        <div class="table-responsive">
+            <table class="table table-sm table-striped uml-table">
+                <thead><tr><th>Centroid</th><th>Engine Displacement (cc)</th><th>Price (COP)</th></tr></thead>
+                <tbody>
+                {% for c in initial_centroids %}
+                    <tr><td>Centroid {{ loop.index }}</td><td>{{ c.cc }}</td><td>{{ "{:,}".format(c.price) }}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="plot-container">
+            <img src="data:image/png;base64,{{ initial_plot }}" alt="Initial records and centroids">
+        </div>
+    </div>
+
+    {% for it in iterations %}
+    <div class="uml-card">
+        <span class="iteration-badge">Iteration {{ it.n }}</span>
+        <h3>Distances, Assignments and Updated Centroids</h3>
+        <p>Euclidean distance (standardized units) from every record to the 3 centroids,
+           the resulting cluster assignment, and the new centroids after averaging each
+           cluster's records.</p>
+
+        <div class="table-responsive" style="max-height: 320px; overflow-y: auto;">
+            <table class="table table-sm table-striped uml-table">
+                <thead class="table-light" style="position: sticky; top:0;">
+                    <tr>
+                        <th>ID</th><th>cc</th><th>Price (COP)</th>
+                        <th>Dist. C1</th><th>Dist. C2</th><th>Dist. C3</th><th>Cluster</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for r in it.rows %}
+                    <tr>
+                        <td>{{ r.id }}</td>
+                        <td>{{ r.cc }}</td>
+                        <td>{{ "{:,}".format(r.price) }}</td>
+                        <td>{{ r.d1 }}</td>
+                        <td>{{ r.d2 }}</td>
+                        <td>{{ r.d3 }}</td>
+                        <td><span class="badge" style="background:{{ ['#4ecdc4','#ff6b9d','#ffb347'][r.cluster-1] }};">{{ r.cluster }}</span></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <h6 style="color:#4a3f45;">Updated Centroids</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered">
+                        <thead><tr><th>Cluster</th><th>cc</th><th>Price (COP)</th><th>Records</th></tr></thead>
+                        <tbody>
+                        {% for c in it.centroids_raw %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ c.cc }}</td>
+                                <td>{{ "{:,}".format(c.price) }}</td>
+                                <td>{{ it.counts[loop.index0] }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h6 style="color:#4a3f45;">Within-Cluster Variance</h6>
+                {% for v in it.variance_per_cluster %}
+                    <div class="var-pill">Cluster {{ loop.index }}: <strong>{{ v }}</strong></div>
+                {% endfor %}
+                <div class="var-pill">Overall: <strong>{{ it.variance_overall }}</strong></div>
+            </div>
+        </div>
+
+        <div class="plot-container">
+            <img src="data:image/png;base64,{{ it.plot }}" alt="Iteration {{ it.n }} clusters">
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="uml-card">
+        <h3>3. Variance Comparison Across Iterations</h3>
+        <div class="table-responsive">
+            <table class="table table-sm table-striped">
+                <thead><tr><th>Iteration</th><th>Cluster 1 Var.</th><th>Cluster 2 Var.</th><th>Cluster 3 Var.</th><th>Overall Var.</th></tr></thead>
+                <tbody>
+                {% for it in iterations %}
+                    <tr>
+                        <td>{{ it.n }}</td>
+                        <td>{{ it.variance_per_cluster[0] }}</td>
+                        <td>{{ it.variance_per_cluster[1] }}</td>
+                        <td>{{ it.variance_per_cluster[2] }}</td>
+                        <td><strong>{{ it.variance_overall }}</strong></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p style="margin:0;">
+            The overall within-cluster variance decreases (or stays essentially flat once
+            converged) from Iteration 1 to Iteration {{ iterations|length }}, which confirms
+            the algorithm is doing its job: each update pulls the centroids toward the true
+            center of their group, shrinking the average squared distance between every
+            record and its assigned centroid. By the last iteration the cluster assignments
+            stop changing (the process has converged).
+        </p>
+    </div>
+
+    <div class="uml-card">
+        <h3>4. Final Result and Cluster Characteristics</h3>
+        <p>Using the last iteration's centroids and assignments:</p>
+        <ul>
+            <li><strong>Cluster 1 (Urban):</strong> lowest displacement and lowest price --
+                consistent with small, economical commuter motorcycles.</li>
+            <li><strong>Cluster 2 (Mid-size):</strong> intermediate displacement and price --
+                consistent with all-purpose, naked-style motorcycles used for both city and
+                longer rides.</li>
+            <li><strong>Cluster 3 (High-performance):</strong> highest displacement and by
+                far the highest price -- consistent with sport/touring motorcycles.</li>
+        </ul>
+        <p style="margin:0;">
+            These three manually-derived groups are consistent with the four data-driven
+            segments found later by scikit-learn in the
+            <a href="{{ url_for('uml_application') }}">Clustering Application</a> (which adds
+            power, weight, fuel consumption and top speed, and therefore is able to split the
+            high-performance group further into Sport and Touring/Adventure).
+        </p>
+    </div>
+
+</div>
+
+{% endblock %}
