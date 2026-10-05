@@ -1,0 +1,223 @@
+{% extends "Mol.html" %}
+
+{% block title %}Reinforcement Learning Application{% endblock %}
+
+{% block extra_style %}
+<style>
+    .rl-card {
+        background: #fff8f0;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 20px;
+        border-left: 4px solid #4ecdc4;
+    }
+    .rl-card h3 { color: #ff6b9d; margin-bottom: 15px; }
+    .stat-card {
+        background: white; border-radius: 8px; padding: 15px; text-align: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08); height: 100%;
+    }
+    .stat-card strong { display:block; font-size: 1.4rem; color:#ff6b9d; margin-top:5px; }
+
+    .grid-wrap { display:flex; justify-content:center; overflow-x:auto; padding:10px 0; }
+    .rl-grid { border-collapse: collapse; }
+    .rl-grid td {
+        width: 34px; height: 34px; min-width:34px;
+        text-align:center; vertical-align:middle;
+        font-size: 0.75rem; font-weight:700; color:white;
+        border: 1px solid #fff8f0;
+    }
+    .cell-A { background:#4ecdc4; }
+    .cell-T { background:#ff6b9d; }
+    .cell-o { background:#b7e8e3; color:#2c4a47; }
+    .cell-wall { background:#4a3f45; }
+    .cell-D { background:#e07b39; }
+    .cell-path { outline: 3px solid #ffd93d; outline-offset:-3px; box-shadow: inset 0 0 0 2px #ffd93d; }
+
+    .legend-swatch {
+        display:inline-block; width:16px; height:16px; border-radius:3px;
+        margin-right:6px; vertical-align:middle;
+    }
+    table.rl-table { font-size: 0.85rem; }
+    .btn-train { background:#ff6b9d; border:none; }
+    .btn-train:hover { background:#ff4f89; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid px-0">
+
+    <h1 style="color:#ff6b9d; margin-bottom:8px;">Reinforcement Learning Application</h1>
+    <p style="color:#555; margin-bottom:25px;">
+        Q-Learning (estimated with a scikit-learn <code>SGDRegressor</code>, trained with
+        <code>partial_fit()</code>) learns to navigate a {{ rows }}&times;{{ cols }} grid
+        from the start cell to the goal, avoiding walls and minimizing time spent in danger
+        zones.
+    </p>
+
+    <div class="rl-card">
+        <h3>1. The Grid Environment</h3>
+        <div class="grid-wrap">
+            <table class="rl-grid">
+                {% for r in range(rows) %}
+                <tr>
+                    {% for c in range(cols) %}
+                        {% set ch = grid[r][c] %}
+                        {% set is_path = trained and ([r, c] in path_list) %}
+                        <td class="{% if ch == 'A' %}cell-A{% elif ch == 'T' %}cell-T{% elif ch == '#' %}cell-wall{% elif ch == 'D' %}cell-D{% else %}cell-o{% endif %} {% if is_path %}cell-path{% endif %}">
+                            {{ ch }}
+                        </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="text-center mt-2" style="font-size:0.85rem; color:#555;">
+            <span class="legend-swatch" style="background:#4ecdc4;"></span>Start (A)
+            <span class="legend-swatch ms-3" style="background:#ff6b9d;"></span>Goal (T)
+            <span class="legend-swatch ms-3" style="background:#b7e8e3;"></span>Open (o)
+            <span class="legend-swatch ms-3" style="background:#4a3f45;"></span>Wall (#)
+            <span class="legend-swatch ms-3" style="background:#e07b39;"></span>Danger (D)
+            {% if trained %}
+            <span class="legend-swatch ms-3" style="background:transparent; outline:3px solid #ffd93d; outline-offset:-3px;"></span>Learned path
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="rl-card">
+        <h3>2. Reward System</h3>
+        <div class="row g-2">
+            <div class="col-6 col-md-3"><div class="stat-card">Move<strong>-1</strong></div></div>
+            <div class="col-6 col-md-3"><div class="stat-card">Invalid move<strong>-5</strong></div></div>
+            <div class="col-6 col-md-3"><div class="stat-card">Danger Zone<strong>-20</strong></div></div>
+            <div class="col-6 col-md-3"><div class="stat-card">Goal<strong>+100</strong></div></div>
+        </div>
+    </div>
+
+    <div class="rl-card">
+        <h3>3. Train the Agent</h3>
+        <p>
+            Training runs <strong>{{ episodes }} episodes</strong> of epsilon-greedy
+            Q-Learning (&alpha;={{ alpha }}, &gamma;={{ gamma }}, &epsilon; decaying from
+            {{ epsilon_start }} to {{ epsilon_min }}), then fits a fresh
+            <code>SGDRegressor</code> to the learned Q-values via repeated
+            <code>partial_fit()</code> passes. Nothing is pre-computed -- every click below
+            trains a brand-new agent from scratch.
+        </p>
+        <form method="POST">
+            <button type="submit" class="btn btn-train text-white px-4 py-2 fw-semibold">
+                {% if trained %}Retrain Agent{% else %}Train Agent{% endif %}
+            </button>
+        </form>
+    </div>
+
+    {% if trained %}
+
+    <div class="rl-card">
+        <h3>4. Training Results</h3>
+        <div class="row g-2 mb-3">
+            <div class="col-6 col-md-3"><div class="stat-card">Episodes<strong>{{ stats.episodes }}</strong></div></div>
+            <div class="col-6 col-md-3"><div class="stat-card">Successful Episodes<strong>{{ stats.successful_episodes }}</strong></div></div>
+            <div class="col-6 col-md-3"><div class="stat-card">Success Rate<strong>{{ stats.success_pct }}%</strong></div></div>
+            <div class="col-6 col-md-3"><div class="stat-card">Average Reward<strong>{{ stats.average_reward }}</strong></div></div>
+            <div class="col-6 col-md-3"><div class="stat-card">Final &epsilon;<strong>{{ stats.final_epsilon }}</strong></div></div>
+            <div class="col-6 col-md-3"><div class="stat-card">States Learned<strong>{{ stats.n_states_learned }}</strong></div></div>
+            <div class="col-6 col-md-3"><div class="stat-card">Calibration Epochs<strong>{{ stats.calibration_epochs }}</strong></div></div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    Goal Reached
+                    <strong style="color: {{ '#4ecdc4' if result.reached_goal else '#ff6b9d' }};">
+                        {{ "Yes" if result.reached_goal else "No" }}
+                    </strong>
+                </div>
+            </div>
+        </div>
+        {% if result.reached_goal %}
+        <div class="alert mb-0" style="background:#e0f7f4; color:#2c4a47; border:none;">
+            The trained agent reached the goal in <strong>{{ result.n_moves }}</strong> moves,
+            with a total reward of <strong>{{ result.total_reward }}</strong>.
+        </div>
+        {% else %}
+        <div class="alert mb-0" style="background:#ffe0ec; color:#7a3550; border:none;">
+            The trained agent did not reach the goal within {{ result.n_moves }} moves
+            (total reward {{ result.total_reward }}). Try clicking "Retrain Agent" again --
+            each run explores the grid differently.
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="rl-card">
+        <h3>5. Learned Path Visualization</h3>
+        <p style="margin:0 0 10px;">The grid above now highlights (in yellow) every cell the
+           trained agent stepped through on its greedy (no-exploration) run, so the
+           original A/T/o/#/D layout stays visible underneath the path.</p>
+        <p class="mb-0"><strong>Path:</strong>
+            {% for s in result.path %}{{ "(" ~ s[0] ~ "," ~ s[1] ~ ")" }}{% if not loop.last %} &rarr; {% endif %}{% endfor %}
+        </p>
+    </div>
+
+    <div class="rl-card">
+        <h3>6. Step-by-Step Evaluation</h3>
+        <div class="table-responsive" style="max-height: 400px; overflow-y:auto;">
+            <table class="table table-sm table-striped rl-table">
+                <thead class="table-light" style="position: sticky; top:0;">
+                    <tr>
+                        <th>Step</th><th>State</th><th>Action</th><th>Next State</th>
+                        <th>Cell Type</th><th>Reward</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for row in result.log %}
+                    <tr>
+                        <td>{{ row.step }}</td>
+                        <td>({{ row.state[0] }},{{ row.state[1] }})</td>
+                        <td>{{ row.action }}</td>
+                        <td>({{ row.next_state[0] }},{{ row.next_state[1] }})</td>
+                        <td>
+                            <span class="badge" style="background:
+                                {% if row.cell_type=='Goal' %}#ff6b9d
+                                {% elif row.cell_type=='Danger Zone' %}#e07b39
+                                {% elif row.cell_type=='Invalid move' %}#4a3f45
+                                {% else %}#4ecdc4{% endif %};">
+                                {{ row.cell_type }}
+                            </span>
+                        </td>
+                        <td>{{ row.reward }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="rl-card">
+        <h3>7. Learned Q-Values (Sample States)</h3>
+        <p>Q(s, a) for a spread-out sample of real grid cells, read directly from the
+           trained <code>SGDRegressor</code>'s <code>predict()</code> output -- the highest
+           value in each row is the action the agent will actually take from that cell.</p>
+        <div class="table-responsive">
+            <table class="table table-sm table-striped rl-table">
+                <thead class="table-light">
+                    <tr><th>State</th><th>Cell</th><th>Up</th><th>Down</th><th>Left</th><th>Right</th></tr>
+                </thead>
+                <tbody>
+                {% for row in q_table %}
+                    <tr>
+                        <td>({{ row.state[0] }},{{ row.state[1] }})</td>
+                        <td>{{ row.cell_type }}</td>
+                        <td>{{ row.up }}</td>
+                        <td>{{ row.down }}</td>
+                        <td>{{ row.left }}</td>
+                        <td>{{ row.right }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
