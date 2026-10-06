@@ -144,3 +144,63 @@ def featurize(state, action):
 def all_open_states():
     """All non-wall states (used to report Q-values for a sample of real, reachable states)."""
     return [(r, c) for r in range(ROWS) for c in range(COLS) if GRID[r][c] != "#"]
+
+def verify_grid():
+    """
+    Verifies the two structural requirements of the activity's grid:
+      1. The exact cell counts: 1 A, 1 T, 68 o, 20 #, 10 D.
+      2. At least one valid path of 14+ steps from START to GOAL exists,
+         found here with a breadth-first search over walkable cells
+         (walls block movement; danger zones are walkable but costly).
+
+    This is a standalone check used to document and defend the grid
+    design in the report and the oral defense -- it does not change how
+    the agent trains or evaluates.
+    """
+    from collections import deque
+
+    counts = {"A": 0, "T": 0, "o": 0, "#": 0, "D": 0}
+    for row in GRID:
+        for ch in row:
+            counts[ch] += 1
+
+    expected = {"A": 1, "T": 1, "o": 68, "#": 20, "D": 10}
+    counts_match = counts == expected
+
+    visited = {START}
+    queue = deque([(START, 0)])
+    shortest_path_length = None
+    while queue:
+        pos, dist = queue.popleft()
+        if pos == GOAL:
+            shortest_path_length = dist
+            break
+        for action in ACTIONS:
+            dr, dc = ACTION_DELTAS[action]
+            r, c = pos
+            next_pos = (r + dr, c + dc)
+            if next_pos in visited or not in_bounds(next_pos) or is_wall(next_pos):
+                continue
+            visited.add(next_pos)
+            queue.append((next_pos, dist + 1))
+
+    path_ok = shortest_path_length is not None and shortest_path_length >= 14
+
+    return {
+        "counts": counts,
+        "expected": expected,
+        "counts_match": counts_match,
+        "shortest_path_length": shortest_path_length,
+        "path_requirement_met": path_ok,
+    }
+
+if __name__ == "__main__":
+    # Running "python RLEnvironment.py" directly prints this verification
+    # report -- real, reproducible evidence for the technical report and
+    # the oral defense, without affecting app.py or training at all.
+    result = verify_grid()
+    print("Cell counts:", result["counts"])
+    print("Expected:   ", result["expected"])
+    print("Counts match expected spec:", result["counts_match"])
+    print("Shortest path (BFS):", result["shortest_path_length"], "steps")
+    print("Meets >= 14 step requirement:", result["path_requirement_met"])
