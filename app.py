@@ -49,6 +49,12 @@ from KMeansCluster import (
     SILHOUETTE_SCORE as UML_SILHOUETTE_SCORE,
     SILHOUETTE_NOTE as UML_SILHOUETTE_NOTE,
 )
+from RLEnvironment import GRID, ROWS as RL_ROWS, COLS as RL_COLS
+from RLAgent import (
+    train_agent, evaluate_policy, sample_q_values,
+    EPISODES as RL_EPISODES, ALPHA as RL_ALPHA, GAMMA as RL_GAMMA,
+    EPSILON_START as RL_EPSILON_START, EPSILON_MIN as RL_EPSILON_MIN,
+)
 
 app = Flask(__name__, template_folder="template")
 
@@ -262,6 +268,44 @@ def uml_application():
         sample_table=UML_SAMPLE_TABLE,
         silhouette_score=UML_SILHOUETTE_SCORE,
         silhouette_note=UML_SILHOUETTE_NOTE,
+    )
+
+
+@app.route("/reinforcement-learning/concepts")
+def rl_concepts():
+    return render_template("rl_concepts.html")
+
+
+@app.route("/reinforcement-learning/application", methods=["GET", "POST"])
+def rl_application():
+    trained = False
+    stats = None
+    result = None
+    q_table = None
+    path_list = []
+
+    if request.method == "POST":
+        model, stats = train_agent()
+        result = evaluate_policy(model)
+        q_table = sample_q_values(model)
+        path_list = [[s[0], s[1]] for s in result["path"]]
+        trained = True
+
+    return render_template(
+        "rl_application.html",
+        rows=RL_ROWS,
+        cols=RL_COLS,
+        grid=GRID,
+        trained=trained,
+        stats=stats,
+        result=result,
+        q_table=q_table,
+        path_list=path_list,
+        episodes=RL_EPISODES,
+        alpha=RL_ALPHA,
+        gamma=RL_GAMMA,
+        epsilon_start=RL_EPSILON_START,
+        epsilon_min=RL_EPSILON_MIN,
     )
 
 

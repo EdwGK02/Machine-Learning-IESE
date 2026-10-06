@@ -1,0 +1,293 @@
+{% extends "Mol.html" %}
+
+{% block title %}Reinforcement Learning Concepts{% endblock %}
+
+{% block extra_style %}
+<style>
+    .rl-card {
+        background: #fff8f0;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 20px;
+        border-left: 4px solid #4ecdc4;
+    }
+    .rl-card h3 { color: #ff6b9d; margin-bottom: 15px; }
+    .rl-card ul { margin: 0; padding-left: 20px; }
+    .rl-card li { margin-bottom: 8px; line-height: 1.5; }
+    .grid-legend-swatch {
+        display:inline-block; width:18px; height:18px; border-radius:4px;
+        margin-right:8px; vertical-align:middle; text-align:center; font-size:0.7rem;
+        line-height:18px; font-weight:700; color:white;
+    }
+    .accordion-button:not(.collapsed) { color:#ff6b9d; background:#ffe0ec; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid px-0">
+
+    <h1 style="color:#ff6b9d; margin-bottom:8px;">Reinforcement Learning</h1>
+    <p style="color:#555; margin-bottom:25px;">
+        How an agent learns a good strategy purely from trial and error -- by acting,
+        observing rewards, and gradually improving its decisions -- applied here to an
+        agent that must find its way across a 10&times;10 grid full of walls and danger
+        zones.
+    </p>
+
+    <div class="rl-card">
+        <h3>Problem Context: Why a Grid-Navigation Agent?</h3>
+        <p style="margin:0;">
+            The earlier modules in this project (Linear Regression, Logistic Regression,
+            Random Forest, K-Means) all learn from a fixed, already-labeled or
+            already-collected dataset: the data exists before training starts, and the
+            model never changes the data by acting on it. Reinforcement Learning is a
+            fundamentally different setting: there is no dataset to begin with. Instead,
+            an <strong>agent</strong> generates its own experience by acting inside an
+            <strong>environment</strong>, and must learn, purely from the rewards and
+            penalties it receives along the way, which actions lead to good outcomes.
+            This project extends the 4&times;4 maze exercise developed in class into a
+            larger, more irregular 10&times;10 grid, with walls that block movement and
+            danger zones that are survivable but costly -- closer to a real path-planning
+            problem than the original toy example.
+        </p>
+    </div>
+
+    <div class="rl-card">
+        <h3>Why Reinforcement Learning and Not Supervised Learning?</h3>
+        <p>
+            Imagine trying to solve this grid with the supervised techniques used earlier
+            in this project. We would need a table of examples saying, for every one of
+            the 100 cells, "the correct move from here is Down." Nobody gave us that table,
+            and building it by hand would already require solving the maze. The agent only
+            knows what happens <em>after</em> it acts: a small penalty for a normal move,
+            a bigger one for bumping into a wall, a steep one for a danger zone, and a
+            large reward for reaching the goal. Reinforcement Learning is designed for
+            exactly this situation, where the correct answer is never shown and has to be
+            discovered through interaction.
+        </p>
+        <p>
+            A second difference is that rewards are <strong>delayed</strong>. Standing at
+            cell (8, 8), the agent receives the +100 only after the final move into the
+            goal, yet every earlier step in the path contributed to getting there. The
+            discount factor &gamma; and the Bellman update are what carry that distant
+            reward backwards, so cells far from the goal gradually inherit a useful Q-value
+            from the cells closer to it. A model that only judged each step in isolation
+            could never learn that a -1 move can be the right choice if it leads to +100.
+        </p>
+        <p style="margin:0;">
+            Finally, in this grid the agent must balance <strong>exploration and
+            exploitation</strong> in a very visible way. If it always repeats the first
+            route that worked, it may settle for a path that crosses a danger zone and
+            never find the safer one; if it explores forever, it never takes advantage of
+            what it learned. That is why &epsilon; starts at 1.0 (pure exploration) and
+            decays toward 0.05 as the episodes go by. The success percentage and the
+            learned path shown on the
+            <a href="{{ url_for('rl_application') }}">Application page</a> are the
+            direct result of that trade-off.
+        </p>
+    </div>
+
+
+    <div class="rl-card">
+        <h3>The Grid World</h3>
+        <p>The agent starts at the top-left corner and must reach the goal at the
+           bottom-right corner, choosing one of four moves at every step:</p>
+        <div class="row g-2 mb-3">
+            <div class="col-6 col-md-3">
+                <span class="grid-legend-swatch" style="background:#4ecdc4;">A</span>
+                Agent start (1 cell)
+            </div>
+            <div class="col-6 col-md-3">
+                <span class="grid-legend-swatch" style="background:#ff6b9d;">T</span>
+                Target / goal (1 cell)
+            </div>
+            <div class="col-6 col-md-3">
+                <span class="grid-legend-swatch" style="background:#b7e8e3; color:#333;">o</span>
+                Open path (68 cells)
+            </div>
+            <div class="col-6 col-md-3">
+                <span class="grid-legend-swatch" style="background:#4a3f45;">#</span>
+                Wall (20 cells)
+            </div>
+            <div class="col-6 col-md-3">
+                <span class="grid-legend-swatch" style="background:#e07b39;">D</span>
+                Danger zone (10 cells)
+            </div>
+        </div>
+        <p style="margin:0;">
+            Walls simply block movement (the agent cannot step onto a "#" cell). Danger
+            zones ("D") are different: the agent <em>can</em> walk through them, but doing
+            so costs a steep penalty, so a well-trained agent learns to avoid them whenever
+            a similarly short, safer route exists -- without being told explicitly "avoid
+            D", only through the reward it receives for stepping there.
+        </p>
+    </div>
+
+    <div class="accordion" id="rlConceptsAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#cAgentEnv">
+                    Agent, Environment, State, and Action
+                </button>
+            </h2>
+            <div id="cAgentEnv" class="accordion-collapse collapse show" data-bs-parent="#rlConceptsAccordion">
+                <div class="accordion-body">
+                    <ul>
+                        <li><strong>Agent:</strong> the decision-maker -- here, the entity
+                            trying to navigate from the start cell to the goal cell.</li>
+                        <li><strong>Environment:</strong> everything the agent interacts
+                            with and has no direct control over -- the 10&times;10 grid
+                            itself, with its fixed walls and danger zones.</li>
+                        <li><strong>State (s):</strong> a complete snapshot of the
+                            situation the agent needs to decide what to do next. In this
+                            exercise a state is simply the agent's current
+                            <code>(row, col)</code> position on the grid.</li>
+                        <li><strong>Action (a):</strong> one of the four moves available at
+                            every state: <code>Up</code>, <code>Down</code>,
+                            <code>Left</code>, <code>Right</code>.</li>
+                        <li><strong>Step:</strong> one state &rarr; action &rarr; next-state
+                            transition. Taking a step is the basic unit of interaction
+                            between the agent and the environment.</li>
+                        <li><strong>Episode:</strong> one complete attempt, from the start
+                            cell until the agent either reaches the goal or runs out of
+                            allotted steps. Training repeats many episodes, and the agent's
+                            behavior (hopefully) keeps improving from one episode to the
+                            next.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cReward">
+                    Reward, Penalty, and Experience
+                </button>
+            </h2>
+            <div id="cReward" class="accordion-collapse collapse" data-bs-parent="#rlConceptsAccordion">
+                <div class="accordion-body">
+                    <ul>
+                        <li><strong>Immediate reward (r):</strong> the single number the
+                            environment hands back right after a step, telling the agent
+                            how good or bad that one move was.</li>
+                        <li><strong>Penalty:</strong> a negative reward -- used here for
+                            invalid moves (walking into a wall or off the grid) and for
+                            stepping onto a danger zone.</li>
+                        <li><strong>Experience:</strong> the full record of one step --
+                            <code>(state, action, reward, next_state)</code> -- which is
+                            exactly what the agent uses to update what it has learned.</li>
+                    </ul>
+                    <p class="mb-0">This exercise's reward system:</p>
+                    <table class="table table-sm mt-2 mb-0">
+                        <thead class="table-light"><tr><th>Event</th><th>Reward</th><th>Why</th></tr></thead>
+                        <tbody>
+                            <tr><td>Move to an open cell</td><td><code>-1</code></td><td>Small step cost, so the agent is pushed toward the <em>shortest</em> path, not just any path.</td></tr>
+                            <tr><td>Invalid move (wall / off-grid)</td><td><code>-5</code></td><td>Discourages wasting steps on illegal moves, more strongly than a normal move.</td></tr>
+                            <tr><td>Step onto a Danger Zone</td><td><code>-20</code></td><td>Allowed, but costly enough that a safer route of similar length is preferred.</td></tr>
+                            <tr><td>Reach the Goal</td><td><code>+100</code></td><td>Large positive signal that clearly marks success and ends the episode.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cPolicy">
+                    Policy, Exploration, and Exploitation
+                </button>
+            </h2>
+            <div id="cPolicy" class="accordion-collapse collapse" data-bs-parent="#rlConceptsAccordion">
+                <div class="accordion-body">
+                    <ul>
+                        <li><strong>Policy (&pi;):</strong> the agent's strategy -- a rule
+                            for picking an action given a state. The goal of training is to
+                            end up with a good policy.</li>
+                        <li><strong>Exploration:</strong> occasionally taking a random
+                            action instead of the one currently believed to be best, so the
+                            agent keeps discovering new parts of the grid and doesn't get
+                            stuck prematurely committing to a mediocre route.</li>
+                        <li><strong>Exploitation:</strong> taking the action currently
+                            believed to be best, to make the most of what has already been
+                            learned.</li>
+                        <li><strong>Epsilon-greedy (&epsilon;-greedy):</strong> the specific
+                            exploration strategy used here -- with probability
+                            &epsilon; take a random action (explore), otherwise take the
+                            best known action (exploit). &epsilon; starts high (mostly
+                            random movement, to see as much of the grid as possible) and
+                            decays every episode toward a small minimum, so the agent shifts
+                            from exploring to exploiting as it learns.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cValues">
+                    Return, Discount Factor, and Value Functions
+                </button>
+            </h2>
+            <div id="cValues" class="accordion-collapse collapse" data-bs-parent="#rlConceptsAccordion">
+                <div class="accordion-body">
+                    <ul>
+                        <li><strong>Return:</strong> the total accumulated reward over an
+                            episode (or from some point onward) -- what the agent is
+                            ultimately trying to maximize, not just the reward of the very
+                            next step.</li>
+                        <li><strong>Discount factor (&gamma;, gamma):</strong> a number
+                            between 0 and 1 (0.95 here) that controls how much a future
+                            reward counts compared to an immediate one. A reward many steps
+                            away is worth &gamma; raised to that many steps, which both
+                            keeps the math well-behaved and reflects that a reward obtained
+                            sooner is generally preferred.</li>
+                        <li><strong>State value V(s):</strong> how good it is to be in state
+                            <em>s</em>, assuming the agent then follows its current policy
+                            -- the expected return starting from that state.</li>
+                        <li><strong>Action value Q(s, a):</strong> how good it is to take
+                            action <em>a</em> in state <em>s</em>, and then follow the
+                            policy afterward. This is the quantity this exercise actually
+                            learns and uses to decide how to move.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cQLearning">
+                    Q-Learning and the SGDRegressor Approximation
+                </button>
+            </h2>
+            <div id="cQLearning" class="accordion-collapse collapse" data-bs-parent="#rlConceptsAccordion">
+                <div class="accordion-body">
+                    <p>Q-Learning updates its estimate of Q(s, a) after every single step,
+                       using the step's observed reward plus the best Q-value available from
+                       the next state (the Bellman equation):</p>
+                    <div class="alert" style="background:#ffe0ec; border:none; text-align:center; font-size:1.05rem;">
+                        Q(s, a) &larr; Q(s, a) + &alpha; &middot; [ r + &gamma; &middot; max<sub>a'</sub> Q(s', a') &minus; Q(s, a) ]
+                    </div>
+                    <p>where &alpha; (alpha) is the learning rate, controlling how much each
+                       new experience overwrites the previous estimate.</p>
+                    <p class="mb-0">
+                        Instead of storing Q(s, a) in a plain lookup table, this exercise
+                        estimates it with a single scikit-learn <code>SGDRegressor</code>,
+                        trained incrementally with <code>partial_fit()</code> -- the same
+                        approach developed in class for the smaller 4&times;4 maze. Each
+                        (state, action) pair is one-hot encoded into its own feature
+                        vector, so the regressor can give every pair its own independent
+                        value, exactly as a lookup table would, while technically remaining
+                        a function approximator trained the way the activity requires.
+                        <code>model.predict()</code> is what produces every Q-value, path,
+                        and evaluation step shown on the
+                        <a href="{{ url_for('rl_application') }}">Application page</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
